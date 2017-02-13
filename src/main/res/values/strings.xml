@@ -8,4 +8,11 @@
     <string name="no_storage_permission">No storage permission.</string>
     <string name="image_not_found">Image file not found</string>
     <string name="refresh">Refresh</string>
+    <string name="no_phone_app_description">To use this app, you need to also install phone app.</string>
+    <string name="no_phone_app_button">Open phone Play Store</string>
+    <string name="play_store_opened">Phone play store opened</string>
+    <string name="play_store_opening_failed">Play store opening failed</string>
+    <string name="no_watch_app_title">Watch app not installed</string>
+    <string name="no_watch_app_description">Watch companion is not installed. This app will not work properly.\n\nIf your watch is running Android Wear 1.x, then you do not have to do anything, app will be installed automatically in few minutes at most.\n\nIf your watch is running Anroid Wear 2, please click \'Open Store\' button below to open Play Store on the watch and install companion app.</string>
+    <string name="no_watch_app_button">Open store</string>
 </resources>

@@ -85,7 +85,11 @@ public class BitmapUtils {
     }
 
     @Nullable
-    public static Bitmap getBitmap(Drawable drawable) {
+    public static Bitmap getBitmap(@Nullable Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             return bitmapDrawable.getBitmap();

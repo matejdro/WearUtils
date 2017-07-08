@@ -22,11 +22,14 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:recyclerview-v7:25.4.0'
-    compile 'com.google.android.gms:play-services-wearable:11.0.2'
     compile 'com.google.android.support:wearable:2.0.3'
     provided 'com.google.android.wearable:wearable:2.0.3'
+
     compile "android.arch.lifecycle:extensions:1.0.0-alpha3"
+
+    compile 'com.google.android.gms:play-services-wearable:11.0.2'
 }
+
 repositories {
     mavenCentral()
 }

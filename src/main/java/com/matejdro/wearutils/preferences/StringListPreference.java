@@ -234,6 +234,7 @@ public class StringListPreference extends DialogPreference {
     /**
      * @return {@code null} if entry is valid or error message if entry is not valid.
      */
+    @SuppressWarnings("SameReturnValue")
     protected String validateNewEntry(String newEntry) {
         return null;
     }
@@ -273,10 +274,10 @@ public class StringListPreference extends DialogPreference {
     }
 
     private class ListItemHolder extends RecyclerView.ViewHolder {
+        public TextView textView;
+
         public ListItemHolder(View itemView) {
             super(itemView);
         }
-
-        public TextView textView;
     }
 }

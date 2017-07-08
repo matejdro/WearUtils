@@ -1,18 +1,15 @@
 package com.matejdro.wearutils.companionnotice;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.wearable.activity.WearableActivity;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.CapabilityApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.wearable.intent.RemoteIntent;
 
 public abstract class WearCompanionWatchActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, ResultCallback<CapabilityApi.GetCapabilityResult> {
     private GoogleApiClient googleApiClient;

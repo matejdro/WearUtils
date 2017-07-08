@@ -45,6 +45,19 @@ public class MessagingUtils
         });
     }
 
+    public static void sendSingleMessage(final GoogleApiClient googleApiClient, final String targetPath, final byte[] payload) {
+        getOtherNodeIdAsync(googleApiClient, new NodeCallback() {
+            @Override
+            public void onNodeRecevived(String node) {
+                Wearable.MessageApi.sendMessage(googleApiClient, node, targetPath, payload);
+            }
+        });
+    }
+
+    public interface NodeCallback {
+        void onNodeRecevived(String node);
+    }
+
     public static class NodeNearbyComparator implements Comparator<Node>
     {
         public static final NodeNearbyComparator INSTANCE = new NodeNearbyComparator();
@@ -56,10 +69,5 @@ public class MessagingUtils
             int nearbyB = b.isNearby() ? 1 : 0;
             return nearbyB - nearbyA;
         }
-    }
-
-    public interface NodeCallback
-    {
-        void onNodeRecevived(String node);
     }
 }

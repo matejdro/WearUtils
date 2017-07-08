@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 //noinspection GroovyMissingReturnStatement
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 18
@@ -20,13 +20,13 @@ android {
 }
 
 dependencies {
-    // Wearable 2.0 includes obsolete appcompat 23 library, which causes lint errors
-    // TODO Remove this exclusion ASAP
-    //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:recyclerview-v7:25.1.1'
-    compile 'com.google.android.gms:play-services-base:10.0.1'
-    compile 'com.google.android.gms:play-services-wearable:10.0.1'
-    compile 'com.google.android.support:wearable:2.0.0'
-    provided 'com.google.android.wearable:wearable:2.0.0'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:recyclerview-v7:25.4.0'
+    compile 'com.google.android.gms:play-services-wearable:11.0.2'
+    compile 'com.google.android.support:wearable:2.0.3'
+    provided 'com.google.android.wearable:wearable:2.0.3'
+    compile "android.arch.lifecycle:extensions:1.0.0-alpha3"
+}
+repositories {
+    mavenCentral()
 }

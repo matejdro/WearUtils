@@ -62,6 +62,27 @@ public class BitmapUtils {
         return Bitmap.createScaledBitmap(original, newWidth, newHeight, filter);
     }
 
+    public static Bitmap resizeAndCrop(Bitmap original, int newWidth, int newHeight, boolean filter) {
+        int originalWidth = original.getWidth();
+        int originalHeight = original.getHeight();
+
+        int originalNewWidth = newWidth;
+        int originalNewHeight = newHeight;
+
+        if (newWidth / (float) originalWidth < newHeight / (float) originalHeight) {
+            newWidth = originalWidth * newHeight / originalHeight;
+        } else {
+            newHeight = originalHeight * newWidth / originalWidth;
+        }
+
+        if (original.getWidth() <= newWidth && original.getHeight() <= newHeight) {
+            return original;
+        }
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(original, newWidth, newHeight, filter);
+        return Bitmap.createBitmap(scaledBitmap, (newWidth - originalNewWidth) / 2, (newHeight - originalNewHeight) / 2, originalNewWidth, originalNewHeight, null, filter);
+    }
+
     @Nullable
     @TargetApi(Build.VERSION_CODES.M)
     public static Bitmap getBitmap(Context context, Icon icon) {
@@ -107,6 +128,21 @@ public class BitmapUtils {
         drawable.draw(canvas);
         return bitmap;
     }
+
+    public static Bitmap getBitmap(Drawable drawable, int width, int height) {
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            return shrinkPreservingRatio(bitmapDrawable.getBitmap(), width, height);
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
 
     @Nullable
     public static byte[] serialize(@Nullable Bitmap bitmap) {

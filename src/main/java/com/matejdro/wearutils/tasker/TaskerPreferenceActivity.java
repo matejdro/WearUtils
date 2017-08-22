@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.matejdro.wearutils.preferences.BundleSharedPreferences;
 import com.matejdro.wearutils.preferences.PreferenceSource;
-import com.matejdro.wearutils.tasker.TaskerSetupActivity;
 
 public abstract class TaskerPreferenceActivity extends TaskerSetupActivity implements PreferenceSource {
     private Bundle preferenceStorage;
@@ -53,6 +52,7 @@ public abstract class TaskerPreferenceActivity extends TaskerSetupActivity imple
         setResult(RESULT_OK, intent);
     }
 
+    @SuppressWarnings("EmptyMethod")
     protected void onPreSave(Bundle settingsBundle, Intent taskerIntent) {
 
     }

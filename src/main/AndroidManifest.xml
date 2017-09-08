@@ -1,3 +1,7 @@
-<manifest package="com.matejdro.wearutils">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="com.matejdro.wearutils">
 
+    <!-- WearUtils package is for both Android phones and Wear device, which only need MinSDK = 23.
+        Ignore MinSDK warning, wear part will not be used on phones -->
+    <uses-sdk tools:overrideLibrary="android.support.wear" />
 </manifest>

@@ -100,7 +100,7 @@ public class StringListPreference extends DialogPreference {
 
         @SuppressLint("InflateParams")
         ViewGroup dialogView = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.dialog_single_edit_text, null);
-        final EditText editField = (EditText) dialogView.findViewById(R.id.edit_text);
+        final EditText editField = dialogView.findViewById(R.id.edit_text);
 
         builder.setTitle(R.string.add);
         builder.setView(dialogView);

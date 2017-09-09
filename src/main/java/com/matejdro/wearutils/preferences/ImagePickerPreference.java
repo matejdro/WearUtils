@@ -32,6 +32,10 @@ import com.matejdro.wearutils.R;
 import com.matejdro.wearutils.miscutils.BitmapUtils;
 import com.matejdro.wearutils.miscutils.HtmlCompat;
 
+interface ImagePickerListener {
+    void onImagePicked(Uri imageUri);
+}
+
 public class ImagePickerPreference extends Preference implements ImagePickerListener {
 
     private String summaryFormat;
@@ -71,6 +75,45 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onImagePicked(Uri imageUri) {
+        setCurrentUri(imageUri);
+    }
+
+    @Override
+    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+        setCurrentUri(restorePersistedValue ? getPersistedString((String) defaultValue) : (String) defaultValue);
+    }
+
+    public void setCurrentUri(String uriString) {
+        if (uriString == null) {
+            setCurrentUri((Uri) null);
+        } else {
+            setCurrentUri(Uri.parse(uriString));
+        }
+    }
+
+    public void setCurrentUri(Uri newUri) {
+        boolean change = currentUri == null || !currentUri.equals(newUri);
+        if (!change) {
+            return;
+        }
+
+        this.currentUri = newUri;
+
+        String summary = String.format(summaryFormat, currentUri.toString());
+        setSummary(HtmlCompat.fromHtml(summary));
+        persistString(this.currentUri.toString());
+
+        notifyDependencyChange(shouldDisableDependents());
+        notifyChanged();
+    }
+
+    @Override
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getString(index);
     }
 
     public static class ImagePickerFragment extends DialogFragment {
@@ -124,8 +167,8 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
             @SuppressLint("InflateParams")
             ViewGroup root = (ViewGroup) LayoutInflater.from(getActivity()).inflate(R.layout.dialog_image_picker, null);
 
-            imagePathBox = (EditText) root.findViewById(R.id.image_path);
-            imageBox = (ImageView) root.findViewById(R.id.image);
+            imagePathBox = root.findViewById(R.id.image_path);
+            imageBox = root.findViewById(R.id.image);
 
             root.findViewById(R.id.refresh_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -237,48 +280,4 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
 
 
     }
-
-
-    @Override
-    public void onImagePicked(Uri imageUri) {
-        setCurrentUri(imageUri);
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        setCurrentUri(restorePersistedValue ? getPersistedString((String) defaultValue) : (String) defaultValue);
-    }
-
-    public void setCurrentUri(String uriString) {
-        if (uriString == null) {
-            setCurrentUri((Uri) null);
-        } else {
-            setCurrentUri(Uri.parse(uriString));
-        }
-    }
-
-    public void setCurrentUri(Uri newUri) {
-        boolean change = currentUri == null || !currentUri.equals(newUri);
-        if (!change) {
-            return;
-        }
-
-        this.currentUri = newUri;
-
-        String summary = String.format(summaryFormat, currentUri.toString());
-        setSummary(HtmlCompat.fromHtml(summary));
-        persistString(this.currentUri.toString());
-
-        notifyDependencyChange(shouldDisableDependents());
-        notifyChanged();
-    }
-
-    @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getString(index);
-    }
-}
-
-interface ImagePickerListener {
-    void onImagePicked(Uri imageUri);
 }

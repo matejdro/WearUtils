@@ -20,20 +20,20 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.0.2'
-    compile 'com.android.support:recyclerview-v7:26.0.2'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
 
     //Wearable support uses old percent version. Exclude it from wearable support group
     // and include it manually
     compile('com.google.android.support:wearable:2.0.5')
-    compile 'com.android.support:percent:26.0.2'
+    compile 'com.android.support:percent:26.1.0'
 
-    compile 'com.android.support:wear:26.0.2'
+    compile 'com.android.support:wear:26.1.0'
     provided 'com.google.android.wearable:wearable:2.0.5'
 
-    compile "android.arch.lifecycle:extensions:1.0.0-alpha9"
+    compile "android.arch.lifecycle:extensions:1.0.0-beta1"
 
-    compile 'com.google.android.gms:play-services-wearable:11.2.2'
+    compile 'com.google.android.gms:play-services-wearable:11.4.0'
 }
 
 repositories {

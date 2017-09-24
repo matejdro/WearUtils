@@ -1,10 +1,11 @@
 package pl.tajchert.exceptionwear;
 
 import android.annotation.SuppressLint;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 
 import com.google.android.gms.wearable.DataMap;
 
@@ -18,19 +19,14 @@ import timber.log.Timber;
 
 
 @SuppressLint("Registered")
-public class ExceptionService extends IntentService {
+public class ExceptionService extends JobIntentService {
     private static final String EXTRA_EXCEPTION = WearExceptionTools.EXCEPTION_WEAR_TAG + "/EXTRA_EXCEPTION";
 
     private ByteArrayOutputStream bos;
     private ObjectOutputStream oos;
 
-    public ExceptionService() {
-        super(WearExceptionTools.EXCEPTION_WEAR_TAG);
-    }
-
     @Override
-    protected void onHandleIntent(Intent intent) {
-
+    protected void onHandleWork(@NonNull Intent intent) {
         try {
             new SendByteArrayToNode(createExceptionInformation(intent).toByteArray(), ExceptionService.this).start();
         } finally {

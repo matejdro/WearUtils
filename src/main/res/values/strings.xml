@@ -15,4 +15,13 @@
     <string name="no_watch_app_title">Watch app not installed</string>
     <string name="no_watch_app_description">Watch companion is not installed. This app will not work properly.\n\nIf your watch is running Android Wear 1.x, then you do not have to do anything, app will be installed automatically in few minutes at most.\n\nIf your watch is running Anroid Wear 2, please click \'Open Store\' button below to open Play Store on the watch and install companion app.</string>
     <string name="no_watch_app_button">Open store</string>
+    <string name="getting_watch_logs">Getting logs from the watch…</string>
+    <string name="logs_attachment">Logs attachment</string>
+    <string name="logs_attachment_explanation">If not automatically attached, please manually
+        attach VibrationCenterLogs.log_zip from the phone\'s internal storage to the created e-mail.\n\nFeel free
+        to delete the
+        file after sending it.</string>
+    <string name="no_email_app_found">No email application found.</string>
+    <string name="log_sending_failed">Log sending failed</string>
+    <string name="log_retrieval_failed">Failed to retrieve log data from the watch. Check the watch connection and retry.</string>
 </resources>

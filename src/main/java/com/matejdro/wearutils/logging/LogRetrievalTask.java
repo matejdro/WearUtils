@@ -21,6 +21,7 @@ import com.matejdro.wearutils.messages.SingleChannelReceiver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -101,6 +102,10 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
         channel.close(googleApiClient).await();
         googleApiClient.disconnect();
 
+        if (!success) {
+            return false;
+        }
+
         FileLogger.getInstance(context).deactivate();
 
         File logsFolder = FileLogger.getInstance(context).getLogsFolder();
@@ -118,24 +123,27 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
                 while ((readBytes = inputStream.read(buffer)) > 0) {
                     zipOutputStream.write(buffer, 0, readBytes);
                 }
+
                 inputStream.close();
+                zipOutputStream.closeEntry();
             }
 
         } catch (Exception e) {
             Timber.e(e, "Zip writing error");
             return false;
         } finally {
-            try {
-                //noinspection ConstantConditions
-                zipOutputStream.close();
-            } catch (Exception ignored) {
+            if (zipOutputStream != null) {
+                try {
+                    zipOutputStream.close();
+                } catch (IOException ignored) {
+                }
             }
 
             FileLogger.getInstance(context).activate();
         }
 
 
-        return success;
+        return true;
     }
 
     @Override
@@ -151,9 +159,11 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
         }
 
         if (success) {
+            String filename = targetFile.getName();
+
             AlertDialog logsInstructionsDialog = new AlertDialog.Builder(context)
                     .setTitle(R.string.logs_attachment)
-                    .setMessage(context.getString(R.string.logs_attachment_explanation))
+                    .setMessage(context.getString(R.string.logs_attachment_explanation, filename))
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -163,8 +173,6 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
                     .create();
 
             logsInstructionsDialog.show();
-
-
         } else {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.log_sending_failed)

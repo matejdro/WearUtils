@@ -55,9 +55,6 @@ public class LogTransmitter extends IntentService {
         FileLogger.getInstance(this).deactivate();
 
         try {
-
-            Timber.d("NullArray %s", FileLogger.getInstance(this).getLogsFolder());
-
             File[] logFiles = FileLogger.getInstance(this).getLogsFolder().listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {

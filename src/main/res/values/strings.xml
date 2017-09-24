@@ -18,7 +18,7 @@
     <string name="getting_watch_logs">Getting logs from the watch…</string>
     <string name="logs_attachment">Logs attachment</string>
     <string name="logs_attachment_explanation">If not automatically attached, please manually
-        attach VibrationCenterLogs.log_zip from the phone\'s internal storage to the created e-mail.\n\nFeel free
+        attach %1$s from the phone\'s internal storage to the created e-mail.\n\nFeel free
         to delete the
         file after sending it.</string>
     <string name="no_email_app_found">No email application found.</string>

@@ -4,14 +4,15 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+
+import com.matejdro.wearutils.companionnotice.WearCompanionPhoneActivity;
 
 /**
  * Activity that can swap fragments between both support and regular fragments.
  * This is used to allow using new compat fragments while still supporting regular
  * PreferenceFragment which has much less issues than compat ones do.
  */
-public abstract class DualFragmentManagerActivity extends AppCompatActivity {
+public abstract class DualFragmentManagerActivity extends WearCompanionPhoneActivity {
     private Object currentFragment = null;
 
     public @Nullable

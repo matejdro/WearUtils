@@ -3,11 +3,12 @@ package com.matejdro.wearutils.logging;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.content.FileProvider;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -38,6 +39,7 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
     private WeakReference<Context> contextReference;
     private String sendLogsMessagePath;
     private String supportMail;
+    private String targetContentProvider;
     private File targetFile;
 
     private WeakReference<ProgressDialog> loadingDialogReference;
@@ -45,11 +47,11 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
     public LogRetrievalTask(Context context,
                             String sendLogsMessagePath,
                             String supportMail,
-                            File targetFile) {
+                            String targetContentProvider) {
         this.contextReference = new WeakReference<>(context);
         this.sendLogsMessagePath = sendLogsMessagePath;
         this.supportMail = supportMail;
-        this.targetFile = targetFile;
+        this.targetContentProvider = targetContentProvider;
     }
 
     @Override
@@ -91,9 +93,11 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
         Channel channel;
         try {
             channel = singleChannelReceiver.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException ignored) {
+        } catch (InterruptedException e) {
+            Timber.e("Log sending interrupted", e);
             return false;
-        } catch (TimeoutException ignored) {
+        } catch (TimeoutException e) {
+            Timber.e("Log sending timeout", e);
             return false;
         }
 
@@ -109,11 +113,17 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
         FileLogger.getInstance(context).deactivate();
 
         File logsFolder = FileLogger.getInstance(context).getLogsFolder();
+        targetFile = new File(logsFolder, "logs.log_zip");
+
         ZipOutputStream zipOutputStream = null;
         try {
             zipOutputStream = new ZipOutputStream(new FileOutputStream(targetFile));
 
             for (File file : logsFolder.listFiles()) {
+                if (!file.getName().endsWith(".log")) {
+                    continue;
+                }
+
                 ZipEntry zipEntry = new ZipEntry(file.getName());
                 zipOutputStream.putNextEntry(zipEntry);
 
@@ -159,20 +169,7 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
         }
 
         if (success) {
-            String filename = targetFile.getName();
-
-            AlertDialog logsInstructionsDialog = new AlertDialog.Builder(context)
-                    .setTitle(R.string.logs_attachment)
-                    .setMessage(context.getString(R.string.logs_attachment_explanation, filename))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            showEmailActivity(context);
-                        }
-                    })
-                    .create();
-
-            logsInstructionsDialog.show();
+            showEmailActivity(context);
         } else {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.log_sending_failed)
@@ -183,15 +180,24 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private void showEmailActivity(Context context) {
+        Uri targetUri = FileProvider.getUriForFile(context, targetContentProvider, targetFile);
+
         try {
-            Intent activityIntent = new Intent(Intent.ACTION_SENDTO);
+            Intent activityIntent = new Intent(Intent.ACTION_SEND);
+
+            activityIntent.putExtra(Intent.EXTRA_STREAM, targetUri);
             activityIntent.setType("application/octet-stream");
-            activityIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(targetFile));
 
-            activityIntent.setData(Uri.parse("mailto: " + supportMail));
+            activityIntent.setClipData(ClipData.newUri(context.getContentResolver(),
+                    context.getString(R.string.logs),
+                    targetUri));
+
+            activityIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{supportMail});
+
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activityIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            context.startActivity(activityIntent);
+            context.startActivity(Intent.createChooser(activityIntent, null));
         } catch (ActivityNotFoundException e) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.log_sending_failed)

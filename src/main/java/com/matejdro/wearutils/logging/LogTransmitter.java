@@ -2,12 +2,18 @@ package com.matejdro.wearutils.logging;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Channel;
 import com.google.android.gms.wearable.ChannelApi;
 import com.google.android.gms.wearable.Wearable;
+import com.matejdro.wearutils.R;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -21,9 +27,36 @@ import timber.log.Timber;
 public class LogTransmitter extends IntentService {
     public static final String EXTRA_TARGET_NODE_ID = "TargetNode";
     public static final String EXTRA_TARGET_PATH = "TargetPath";
+    public static final String LOG_RETRIEVAL_CHANNEL = "LOG_RETRIEVAL";
 
     public LogTransmitter() {
         super("WearLogTransmitter");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Timber.d("SENDLOGS TRANSMITTER");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel logRetrievalChannel = new NotificationChannel(LOG_RETRIEVAL_CHANNEL,
+                    getString(R.string.logs),
+                    NotificationManager.IMPORTANCE_MIN);
+
+            //noinspection ConstantConditions
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(logRetrievalChannel);
+        }
+
+        @SuppressLint("WrongConstant") Notification foregroundNotification
+                = new NotificationCompat.Builder(this, LOG_RETRIEVAL_CHANNEL)
+                .setContentText(getString(R.string.logs))
+                .setContentTitle(getString(R.string.logs))
+                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
+
+        startForeground(9999, foregroundNotification);
     }
 
     @Override

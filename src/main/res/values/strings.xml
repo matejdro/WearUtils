@@ -24,4 +24,5 @@
     <string name="no_email_app_found">No email application found.</string>
     <string name="log_sending_failed">Log sending failed</string>
     <string name="log_retrieval_failed">Failed to retrieve log data from the watch. Check the watch connection and retry.</string>
+    <string name="logs">Logs</string>
 </resources>

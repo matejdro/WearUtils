@@ -85,7 +85,7 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
             writer = null;
         }
 
-        preferences.edit().putInt(PREFERENCES_NAME, fileIndex).apply();
+        preferences.edit().putInt(CURRENT_FILE_PREFERENCE, fileIndex).apply();
     }
 
     private boolean checkOpenedFile() {

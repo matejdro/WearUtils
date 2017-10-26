@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.wearable.activity.WearableActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.CapabilityApi;
 import com.google.android.gms.wearable.Wearable;
 
-public abstract class WearCompanionWatchActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, ResultCallback<CapabilityApi.GetCapabilityResult> {
+public abstract class WearCompanionWatchActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, ResultCallback<CapabilityApi.GetCapabilityResult> {
     private GoogleApiClient googleApiClient;
 
     @Override

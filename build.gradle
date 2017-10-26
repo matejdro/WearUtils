@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 
 //noinspection GroovyMissingReturnStatement
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.0"
 
     defaultConfig {
         minSdkVersion 18
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -20,18 +20,20 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:appcompat-v7:27.0.0'
+    compile 'com.android.support:recyclerview-v7:27.0.0'
 
-    //Wearable support uses old percent version. Exclude it from wearable support group
-    // and include it manually
-    compile('com.google.android.support:wearable:2.0.5')
-    compile 'com.android.support:percent:26.1.0'
+    // Wearable support uses old percent, media-compat and support-v4 version.
+    // Manually override
+    compile 'com.google.android.support:wearable:2.1.0'
+    compile 'com.android.support:percent:27.0.0'
+    compile 'com.android.support:support-media-compat:27.0.0'
+    compile 'com.android.support:support-v4:27.0.0'
 
-    compile 'com.android.support:wear:26.1.0'
-    provided 'com.google.android.wearable:wearable:2.0.5'
+    compile 'com.android.support:wear:27.0.0'
+    provided 'com.google.android.wearable:wearable:2.1.0'
 
-    compile "android.arch.lifecycle:extensions:1.0.0-rc1"
+    compile 'android.arch.lifecycle:extensions:1.0.0-rc1'
 
     compile 'com.google.android.gms:play-services-wearable:11.4.2'
 }

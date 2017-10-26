@@ -59,11 +59,13 @@ public class LogReceiver {
         byte[] buffer = new byte[1024];
         FileOutputStream outputStream = new FileOutputStream(file);
 
-        int readBytes;
-        int numToRead = Math.min(buffer.length, fileSizeLeft);
-        while ((readBytes = inputStream.read(buffer, 0, numToRead)) > 0) {
+        while (fileSizeLeft > 0) {
+            int numToRead = Math.min(buffer.length, fileSizeLeft);
+            int readBytes = inputStream.read(buffer, 0, numToRead);
+
+            fileSizeLeft -= readBytes;
+
             outputStream.write(buffer, 0, readBytes);
-            numToRead = Math.min(buffer.length, fileSizeLeft);
         }
 
         outputStream.close();

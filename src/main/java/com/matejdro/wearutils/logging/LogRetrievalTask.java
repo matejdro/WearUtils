@@ -90,7 +90,7 @@ public class LogRetrievalTask extends AsyncTask<Void, Void, Boolean> {
 
         Channel channel;
         try {
-            channel = singleChannelReceiver.get(2, TimeUnit.SECONDS);
+            channel = singleChannelReceiver.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
             return false;
         } catch (TimeoutException ignored) {

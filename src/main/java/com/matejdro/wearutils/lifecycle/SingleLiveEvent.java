@@ -20,6 +20,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,7 +41,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private final AtomicBoolean mPending = new AtomicBoolean(false);
 
     @MainThread
-    public void observe(LifecycleOwner owner, final Observer<T> observer) {
+    public void observe(@NonNull LifecycleOwner owner, @NonNull final Observer<T> observer) {
 
         if (hasActiveObservers()) {
             throw new IllegalStateException("Multiple observers registered but only one will be notified of changes.");

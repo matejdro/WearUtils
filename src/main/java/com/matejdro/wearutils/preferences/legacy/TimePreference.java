@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -12,40 +12,34 @@ import com.matejdro.wearutils.miscutils.HtmlCompat;
 
 import java.util.Calendar;
 
-public class TimePreference extends Preference implements TimePickerDialog.OnTimeSetListener
-{
+public class TimePreference extends Preference implements TimePickerDialog.OnTimeSetListener {
     private String summaryFormat;
     private int time = 0;
     private java.text.DateFormat timeFormat;
 
-    public TimePreference(Context context)
-    {
+    public TimePreference(Context context) {
         super(context, null);
         init();
     }
 
-    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr)
-    {
+    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public TimePreference(Context context, AttributeSet attrs)
-    {
+    public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    private void init()
-    {
+    private void init() {
         summaryFormat = getSummary().toString();
 
         timeFormat = DateFormat.getTimeFormat(getContext());
     }
 
     @Override
-    protected void onClick()
-    {
+    protected void onClick() {
         int hour = time / 60;
         int minute = time % 60;
         TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), this, hour, minute, DateFormat.is24HourFormat(getContext()));
@@ -54,8 +48,7 @@ public class TimePreference extends Preference implements TimePickerDialog.OnTim
 
     }
 
-    private void updateSummary()
-    {
+    private void updateSummary() {
         int hour = time / 60;
         int minute = time % 60;
         Calendar calendar = Calendar.getInstance();
@@ -68,21 +61,18 @@ public class TimePreference extends Preference implements TimePickerDialog.OnTim
     }
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index)
-    {
+    protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getInt(index, 0);
     }
 
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-    {
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         time = restoreValue ? getPersistedInt(0) : (Integer) defaultValue;
         updateSummary();
     }
 
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute)
-    {
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         time = hourOfDay * 60 + minute;
         persistInt(time);
         updateSummary();

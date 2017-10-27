@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.app.AlertDialog;
 import android.content.Context;

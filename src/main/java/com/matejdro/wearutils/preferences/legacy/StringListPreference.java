@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

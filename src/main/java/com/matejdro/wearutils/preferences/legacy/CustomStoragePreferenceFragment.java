@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
@@ -6,28 +6,26 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+import com.matejdro.wearutils.preferences.PreferenceSource;
+
 import java.lang.reflect.Field;
 
-public abstract class CustomStoragePreferenceFragment extends PreferenceFragment
-{
+public abstract class CustomStoragePreferenceFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getActivity() instanceof PreferenceSource)
-        {
+        if (getActivity() instanceof PreferenceSource) {
             SharedPreferences sharedPreferences = ((PreferenceSource) getActivity()).getCustomPreferences();
             injectSharedPreferences(sharedPreferences);
         }
     }
 
     @SuppressLint("CommitPrefEdits")
-    protected void injectSharedPreferences(SharedPreferences preferences)
-    {
+    protected void injectSharedPreferences(SharedPreferences preferences) {
         PreferenceManager manager = getPreferenceManager();
 
-        try
-        {
+        try {
             Field field = PreferenceManager.class.getDeclaredField("mSharedPreferences");
             field.setAccessible(true);
             field.set(manager, preferences);
@@ -36,8 +34,7 @@ public abstract class CustomStoragePreferenceFragment extends PreferenceFragment
             field.setAccessible(true);
             field.set(manager, preferences.edit());
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

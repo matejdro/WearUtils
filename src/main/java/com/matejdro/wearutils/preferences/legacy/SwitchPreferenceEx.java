@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,7 +12,7 @@ import com.matejdro.wearutils.miscutils.HtmlCompat;
 
 /**
  * <p>SwitchPreference that will:</p>
- *
+ * <p>
  * <p>1. Obey HTML tags in summary</p>
  * <p>2. Display title in two lines if it can't fit into one</p>
  */
@@ -43,8 +43,7 @@ public class SwitchPreferenceEx extends SwitchPreference {
         init();
     }
 
-    private void init()
-    {
+    private void init() {
         setSummaryOff(HtmlCompat.fromHtml(getSummaryOff().toString()));
         setSummaryOn(HtmlCompat.fromHtml(getSummaryOn().toString()));
     }

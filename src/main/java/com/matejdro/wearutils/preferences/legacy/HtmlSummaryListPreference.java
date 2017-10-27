@@ -1,4 +1,4 @@
-package com.matejdro.wearutils.preferences;
+package com.matejdro.wearutils.preferences.legacy;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,8 +8,7 @@ import android.util.AttributeSet;
 
 import com.matejdro.wearutils.miscutils.HtmlCompat;
 
-public class HtmlSummaryListPreference extends ListPreference
-{
+public class HtmlSummaryListPreference extends ListPreference {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public HtmlSummaryListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);

@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -26,11 +27,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.matejdro.wearutils.R;
 import com.matejdro.wearutils.miscutils.BitmapUtils;
 import com.matejdro.wearutils.miscutils.HtmlCompat;
+
+import java.lang.ref.WeakReference;
 
 interface ImagePickerListener {
     void onImagePicked(Uri imageUri);
@@ -125,6 +129,9 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
 
         private ImageView imageBox;
         private EditText imagePathBox;
+        private ProgressBar progressBar;
+
+        private ImageUpdateTask currentUpdateTask;
 
         public ImagePickerFragment() {
 
@@ -169,6 +176,7 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
 
             imagePathBox = root.findViewById(R.id.image_path);
             imageBox = root.findViewById(R.id.image);
+            progressBar = root.findViewById(R.id.progress);
 
             root.findViewById(R.id.refresh_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -211,34 +219,18 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
         }
 
         private void updatePicture() {
-            if (selectedUri == null || selectedUri.toString().trim().isEmpty()) {
-                imagePathBox.setText(null);
-                imageBox.setImageDrawable(null);
-            } else {
-                imagePathBox.setText(selectedUri.toString());
+            if (currentUpdateTask != null) {
+                currentUpdateTask.cancel(true);
+                currentUpdateTask = null;
+            }
 
-                Drawable image;
-                try {
-                    image = BitmapUtils.getDrawableFromUri(getActivity(), selectedUri);
-                } catch (SecurityException e) {
-                    Toast.makeText(getActivity(), R.string.no_storage_permission, Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            imagePathBox.setText(null);
+            imageBox.setImageDrawable(null);
 
-                if (image == null) {
-                    Toast.makeText(getActivity(), R.string.image_not_found, Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (selectedUri != null && !selectedUri.toString().trim().isEmpty()) {
+                progressBar.setVisibility(View.VISIBLE);
 
-                // Make sure image can be opened later.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    try {
-                        getActivity().getContentResolver().takePersistableUriPermission(selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    } catch (SecurityException ignored) {
-                    }
-                }
-
-                imageBox.setImageDrawable(image);
+                new ImageUpdateTask(this, selectedUri).execute((Void) null);
             }
         }
 
@@ -275,9 +267,76 @@ public class ImagePickerPreference extends Preference implements ImagePickerList
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(getActivity(), R.string.error_no_gallery, Toast.LENGTH_SHORT).show();
             }
-
         }
 
+        private static class ImageUpdateTask extends AsyncTask<Void, Void, Drawable> {
+            private WeakReference<ImagePickerFragment> targetFragment;
+            private Uri uri;
+            private String error;
 
+            public ImageUpdateTask(ImagePickerFragment targetFragment, Uri uri) {
+                this.targetFragment = new WeakReference<>(targetFragment);
+                this.uri = uri;
+
+                error = targetFragment.getString(R.string.image_not_found);
+            }
+
+            @Override
+            protected Drawable doInBackground(Void... voids) {
+                ImagePickerFragment targetFragment = this.targetFragment.get();
+                if (targetFragment == null) {
+                    return null;
+                }
+
+                Context context = targetFragment.getActivity();
+                if (context == null) {
+                    return null;
+                }
+
+
+                Drawable image;
+                try {
+                    image = BitmapUtils.getDrawableFromUri(context, uri);
+                } catch (SecurityException e) {
+                    error = context.getString(R.string.no_storage_permission);
+                    return null;
+                }
+
+                // Make sure image can be opened later.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    try {
+                        context.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (SecurityException ignored) {
+                    }
+                }
+
+                return image;
+            }
+
+
+            @Override
+            protected void onPostExecute(Drawable drawable) {
+                ImagePickerFragment targetFragment = this.targetFragment.get();
+                if (targetFragment == null) {
+                    return;
+                }
+
+                targetFragment.progressBar.setVisibility(View.GONE);
+
+                Context context = targetFragment.getActivity();
+                if (context == null) {
+                    return;
+                }
+
+                targetFragment.imagePathBox.setText(uri.toString());
+
+                if (drawable == null) {
+                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                targetFragment.imageBox.setImageDrawable(drawable);
+            }
+        }
     }
 }

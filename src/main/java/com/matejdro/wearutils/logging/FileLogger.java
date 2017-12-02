@@ -67,10 +67,13 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
     }
 
     public synchronized void activate() {
-        openNextFile();
+        int currentFileIndex = preferences.getInt(CURRENT_FILE_PREFERENCE, 0);
+        openFile(currentFileIndex, true);
+
+        checkCurrentFileSize();
     }
 
-    private void openFile(int fileIndex) {
+    private void openFile(int fileIndex, boolean append) {
         if (!logsFolder.exists()) {
             if (!logsFolder.mkdir()) {
                 throw new RuntimeException("Cannot create logging folder!");
@@ -80,7 +83,7 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
         String filename = "log_" + fileIndex + ".log";
         currentFile = new File(logsFolder, filename);
         try {
-            writer = new BufferedWriter(new FileWriter(currentFile));
+            writer = new BufferedWriter(new FileWriter(currentFile, append));
         } catch (IOException ignored) {
             writer = null;
         }
@@ -88,12 +91,13 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
         preferences.edit().putInt(CURRENT_FILE_PREFERENCE, fileIndex).apply();
     }
 
-    private boolean checkOpenedFile() {
+    private boolean checkCurrentFileSize() {
         if (currentFile.length() > MAX_LOG_FILE_SIZE) {
             flushHandler.removeMessages(MESSAGE_FLUSH_LOG);
 
             try {
                 writer.close();
+                openNextFile();
             } catch (IOException ignored) {
                 writer = null;
                 return false;
@@ -108,7 +112,7 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
     private void openNextFile() {
         int currentFileIndex = preferences.getInt(CURRENT_FILE_PREFERENCE, 0);
         currentFileIndex = (currentFileIndex + 1) % NUM_FILES;
-        openFile(currentFileIndex);
+        openFile(currentFileIndex, false);
     }
 
     @Override
@@ -121,14 +125,16 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
             Calendar calendar = Calendar.getInstance();
             writer.write(
                     getLogPriorityAbbreviation(priority) + " " +
-                            LOG_DATE_FORMAT.format(calendar.getTime()) + " " +
+                            LOG_DATE_FORMAT.format(calendar.getTime()) + " [" +
+                            tag + "] " +
                             message
             );
             writer.newLine();
 
-            if (checkOpenedFile()) {
+            flushHandler.removeMessages(MESSAGE_FLUSH_LOG);
+
+            if (checkCurrentFileSize()) {
                 // Batch buffer flushes together
-                flushHandler.removeMessages(MESSAGE_FLUSH_LOG);
                 flushHandler.sendEmptyMessageDelayed(MESSAGE_FLUSH_LOG, FLUSH_DELAY);
             }
         } catch (IOException ignored) {

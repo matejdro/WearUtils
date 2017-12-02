@@ -5,6 +5,7 @@ import android.support.annotation.WorkerThread;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
@@ -53,6 +54,16 @@ public class MessagingUtils
             }
         });
     }
+
+    public static void sendSingleMessage(final GoogleApiClient googleApiClient, final String targetPath, final byte[] payload, final ResultCallback<? super MessageApi.SendMessageResult> callback) {
+        getOtherNodeIdAsync(googleApiClient, new NodeCallback() {
+            @Override
+            public void onNodeRecevived(String node) {
+                Wearable.MessageApi.sendMessage(googleApiClient, node, targetPath, payload).setResultCallback(callback);
+            }
+        });
+    }
+
 
     public interface NodeCallback {
         void onNodeRecevived(String node);

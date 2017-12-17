@@ -31,6 +31,9 @@ public class LogReceiver {
 
         DataInputStream inputStream = new DataInputStream(getInputStreamResult.getInputStream());
         File logsFolder = FileLogger.getInstance(googleApiClient.getContext()).getLogsFolder();
+        //noinspection ResultOfMethodCallIgnored
+        logsFolder.mkdirs();
+
         try
         {
             int numFiles = inputStream.readInt();

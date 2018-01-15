@@ -11,6 +11,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Preferences {
     public static int getInt(SharedPreferences preferences, PreferenceDefinition<Integer> preference)
@@ -26,6 +27,10 @@ public class Preferences {
     public static String getString(SharedPreferences preferences, PreferenceDefinition<String> preference)
     {
         return preferences.getString(preference.getKey(), preference.getDefaultValue());
+    }
+
+    public static Set<String> getStringSet(SharedPreferences preferences, PreferenceDefinition<Set<String>> preference) {
+        return preferences.getStringSet(preference.getKey(), preference.getDefaultValue());
     }
 
     public static Uri getUri(SharedPreferences preferences, PreferenceDefinition<Uri> preference)

@@ -9,17 +9,19 @@ import com.google.android.gms.wearable.Wearable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 public class DataUtils {
     @Nullable
-    public static byte[] getByteArrayAsset(@Nullable DataItemAsset asset, GoogleApiClient connectedApiClient) {
-        if (asset == null) {
+    public static byte[] getByteArrayAsset(@Nullable DataItemAsset asset, GoogleApiClient googleApiClient) {
+        if (asset == null || !googleApiClient.isConnected()) {
             return null;
         }
 
-        InputStream inputStream = Wearable.DataApi.getFdForAsset(connectedApiClient, asset).await().getInputStream();
+        InputStream inputStream = Wearable.DataApi.getFdForAsset(googleApiClient, asset).await(1, TimeUnit.SECONDS).getInputStream();
+
         byte[] data = readFully(inputStream);
-        if (data != null) {
+        if (inputStream != null) {
             try {
                 inputStream.close();
             } catch (IOException ignored) {

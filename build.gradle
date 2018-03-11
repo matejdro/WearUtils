@@ -8,6 +8,8 @@ buildscript {
         defaultArchComponentsVersion = "1.1.0"
         defaultPlayServicesVersion = "11.8.0"
         defaultKotlinVersion = "1.2.30"
+        defaultJunitVersion = "4.12"
+        defaultRobolectricVersion = "3.7.1"
     }
 
     repositories {
@@ -61,6 +63,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getPropertyOrDefault("kotlinVersion", defaultKotlinVersion)}"
+
+    testImplementation "org.robolectric:robolectric:${getPropertyOrDefault("robolectricVersion", defaultRobolectricVersion)}"
+    testImplementation "junit:junit:${getPropertyOrDefault("junitVersion", defaultJunitVersion)}"
 }
 
 configurations.all {

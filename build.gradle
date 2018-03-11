@@ -1,11 +1,30 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
-ext {
-    defaultSupportLibVersion = "27.0.2"
-    defaultSupportWearableVersion = "2.2.0"
-    defaultArchComponentsVersion = "1.1.0"
-    defaultPlayServicesVersion = "11.8.0"
+buildscript {
+    ext {
+        defaultSupportLibVersion = "27.0.2"
+        defaultSupportWearableVersion = "2.2.0"
+        defaultArchComponentsVersion = "1.1.0"
+        defaultPlayServicesVersion = "11.8.0"
+        defaultKotlinVersion = "1.2.30"
+    }
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        def kotlinVersion = defaultKotlinVersion
+        if (projects.hasProperty("kotlinVersion")) {
+            kotlinVersion = project.properties.get("kotlinVersion")
+        }
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
 }
+
+
 
 //noinspection GroovyMissingReturnStatement
 android {
@@ -17,6 +36,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -26,22 +46,21 @@ android {
 }
 
 dependencies {
-    // All dependencies are defined as compileOnly to not pollute apps that use this with all dependencies.
-    // Apps must redefine dependencies on their own
+    implementation "com.android.support:appcompat-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    implementation "com.android.support:recyclerview-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    implementation "com.android.support:preference-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
 
-    compileOnly "com.android.support:appcompat-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
-    compileOnly "com.android.support:recyclerview-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
-    compileOnly "com.android.support:preference-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    implementation "com.android.support:wear:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
 
-    compileOnly "com.android.support:wear:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
-
-    compileOnly "com.google.android.support:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
+    implementation "com.google.android.support:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
     compileOnly "com.google.android.wearable:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
 
-    compileOnly "android.arch.lifecycle:extensions:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
-    compileOnly "android.arch.lifecycle:runtime:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
+    implementation "android.arch.lifecycle:extensions:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
+    implementation "android.arch.lifecycle:runtime:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
 
-    compileOnly "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
+    implementation "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
+
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getPropertyOrDefault("kotlinVersion", defaultKotlinVersion)}"
 }
 
 configurations.all {
@@ -57,14 +76,15 @@ configurations.all {
     }
 }
 
+
+repositories {
+    mavenCentral()
+}
+
 def getPropertyOrDefault(property, defaultValue) {
     if (!project.hasProperty(property)) {
         return defaultValue
     }
 
     return project.properties.get(property)
-}
-
-repositories {
-    mavenCentral()
 }

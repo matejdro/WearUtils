@@ -1,5 +1,12 @@
 apply plugin: 'com.android.library'
 
+ext {
+    defaultSupportLibVersion = "27.0.2"
+    defaultSupportWearableVersion = "2.2.0"
+    defaultArchComponentsVersion = "1.1.0"
+    defaultPlayServicesVersion = "11.8.0"
+}
+
 //noinspection GroovyMissingReturnStatement
 android {
     compileSdkVersion 27
@@ -19,24 +26,43 @@ android {
 }
 
 dependencies {
-    api 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support:recyclerview-v7:27.0.2'
-    implementation "com.android.support:preference-v7:27.0.2"
+    // All dependencies are defined as compileOnly to not pollute apps that use this with all dependencies.
+    // Apps must redefine dependencies on their own
 
-    // Wearable support uses old percent, media-compat and support-v4 version.
-    // Manually override
-    implementation 'com.google.android.support:wearable:2.2.0'
-    implementation 'com.android.support:percent:27.0.2'
-    implementation 'com.android.support:support-media-compat:27.0.2'
-    implementation 'com.android.support:support-v4:27.0.2'
+    compileOnly "com.android.support:appcompat-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    compileOnly "com.android.support:recyclerview-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    compileOnly "com.android.support:preference-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
 
-    implementation 'com.android.support:wear:27.0.2'
-    compileOnly 'com.google.android.wearable:wearable:2.2.0'
+    compileOnly "com.android.support:wear:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
 
-    api 'android.arch.lifecycle:extensions:1.1.0'
-    api 'android.arch.lifecycle:runtime:1.1.0'
+    compileOnly "com.google.android.support:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
+    compileOnly "com.google.android.wearable:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
 
-    api 'com.google.android.gms:play-services-wearable:11.8.0'
+    compileOnly "android.arch.lifecycle:extensions:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
+    compileOnly "android.arch.lifecycle:runtime:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
+
+    compileOnly "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            // Force all of the primary support libraries to use the same version.
+            if (details.requested.group == 'com.android.support'
+                    && details.requested.name != 'multidex'
+                    && details.requested.name != 'multidex-instrumentation') {
+                details.useVersion getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)
+            }
+        }
+    }
+}
+
+def getPropertyOrDefault(property, defaultValue) {
+    if (!project.hasProperty(property)) {
+        return defaultValue
+    }
+
+    return project.properties.get(property)
 }
 
 repositories {

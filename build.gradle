@@ -10,6 +10,7 @@ buildscript {
         defaultKotlinVersion = "1.2.30"
         defaultJunitVersion = "4.12"
         defaultRobolectricVersion = "3.7.1"
+        defaultCoroutinesVersion = '0.22.4'
     }
 
     repositories {
@@ -61,8 +62,10 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
 
     implementation "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
+    implementation "com.google.android.gms:play-services-location:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getPropertyOrDefault("kotlinVersion", defaultKotlinVersion)}"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:$defaultCoroutinesVersion"
 
     testImplementation "org.robolectric:robolectric:${getPropertyOrDefault("robolectricVersion", defaultRobolectricVersion)}"
     testImplementation "junit:junit:${getPropertyOrDefault("junitVersion", defaultJunitVersion)}"
@@ -84,6 +87,12 @@ configurations.all {
 
 repositories {
     mavenCentral()
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
 
 def getPropertyOrDefault(property, defaultValue) {

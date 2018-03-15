@@ -9,6 +9,10 @@ import android.support.annotation.Nullable;
 import com.matejdro.wearutils.preferences.BundleSharedPreferences;
 import com.matejdro.wearutils.preferences.PreferenceSource;
 
+/**
+ * @deprecated Use {@link TaskerPreferenceDisplayActivity} instead
+ */
+@Deprecated
 public abstract class TaskerPreferenceActivity extends TaskerSetupActivity implements PreferenceSource {
     private Bundle preferenceStorage;
     private SharedPreferences preferences;

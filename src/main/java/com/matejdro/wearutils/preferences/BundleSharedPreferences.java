@@ -3,21 +3,31 @@ package com.matejdro.wearutils.preferences;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.PreferenceDataStore;
 
 import java.util.Map;
 import java.util.Set;
 
 import timber.log.Timber;
 
-public class BundleSharedPreferences implements SharedPreferences {
+public class BundleSharedPreferences extends PreferenceDataStore implements SharedPreferences {
     private final Bundle storage;
     private final
     @Nullable
     SharedPreferences originalPreferences;
+    private String prefix = "setting_";
 
     public BundleSharedPreferences(@Nullable SharedPreferences originalValues, Bundle storage) {
         this.storage = storage;
         originalPreferences = originalValues;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     @Override
@@ -27,8 +37,8 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public String getString(String key, String defValue) {
-        if (storage.containsKey("setting_".concat(key)))
-            return storage.getString("setting_".concat(key));
+        if (storage.containsKey(prefix.concat(key)))
+            return storage.getString(prefix.concat(key));
 
         if (originalPreferences == null) {
             return defValue;
@@ -44,8 +54,8 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public int getInt(String key, int defValue) {
-        if (storage.containsKey("setting_".concat(key)))
-            return storage.getInt("setting_".concat(key));
+        if (storage.containsKey(prefix.concat(key)))
+            return storage.getInt(prefix.concat(key));
 
         if (originalPreferences == null) {
             return defValue;
@@ -57,8 +67,8 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public long getLong(String key, long defValue) {
-        if (storage.containsKey("setting_".concat(key)))
-            return storage.getLong("setting_".concat(key));
+        if (storage.containsKey(prefix.concat(key)))
+            return storage.getLong(prefix.concat(key));
 
         if (originalPreferences == null) {
             return defValue;
@@ -69,8 +79,8 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public float getFloat(String key, float defValue) {
-        if (storage.containsKey("setting_".concat(key)))
-            return storage.getFloat("setting_".concat(key));
+        if (storage.containsKey(prefix.concat(key)))
+            return storage.getFloat(prefix.concat(key));
 
         if (originalPreferences == null) {
             return defValue;
@@ -81,8 +91,8 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
-        if (storage.containsKey("setting_".concat(key)))
-            return storage.getBoolean("setting_".concat(key));
+        if (storage.containsKey(prefix.concat(key)))
+            return storage.getBoolean(prefix.concat(key));
 
         if (originalPreferences == null) {
             return defValue;
@@ -93,7 +103,7 @@ public class BundleSharedPreferences implements SharedPreferences {
 
     @Override
     public boolean contains(String key) {
-        return (originalPreferences != null && originalPreferences.contains(key)) || storage.containsKey("setting_".concat(key));
+        return (originalPreferences != null && originalPreferences.contains(key)) || storage.containsKey(prefix.concat(key));
     }
 
     @Override
@@ -111,10 +121,35 @@ public class BundleSharedPreferences implements SharedPreferences {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void putString(String s, String s2) {
+        storage.putString(prefix.concat(s), s2);
+    }
+
+    @Override
+    public void putInt(String s, int i) {
+        storage.putInt(prefix.concat(s), i);
+    }
+
+    @Override
+    public void putLong(String s, long l) {
+        storage.putLong(prefix.concat(s), l);
+    }
+
+    @Override
+    public void putFloat(String s, float v) {
+        storage.putFloat(prefix.concat(s), v);
+    }
+
+    @Override
+    public void putBoolean(String s, boolean b) {
+        storage.putBoolean(prefix.concat(s), b);
+    }
+
     public class Editor implements SharedPreferences.Editor {
         @Override
         public SharedPreferences.Editor putString(String s, String s2) {
-            storage.putString("setting_".concat(s), s2);
+            storage.putString(prefix.concat(s), s2);
             return this;
         }
 
@@ -125,31 +160,31 @@ public class BundleSharedPreferences implements SharedPreferences {
 
         @Override
         public SharedPreferences.Editor putInt(String s, int i) {
-            storage.putInt("setting_".concat(s), i);
+            storage.putInt(prefix.concat(s), i);
             return this;
         }
 
         @Override
         public SharedPreferences.Editor putLong(String s, long l) {
-            storage.putLong("setting_".concat(s), l);
+            storage.putLong(prefix.concat(s), l);
             return this;
         }
 
         @Override
         public SharedPreferences.Editor putFloat(String s, float v) {
-            storage.putFloat("setting_".concat(s), v);
+            storage.putFloat(prefix.concat(s), v);
             return this;
         }
 
         @Override
         public SharedPreferences.Editor putBoolean(String s, boolean b) {
-            storage.putBoolean("setting_".concat(s), b);
+            storage.putBoolean(prefix.concat(s), b);
             return this;
         }
 
         @Override
         public SharedPreferences.Editor remove(String s) {
-            storage.remove("setting_".concat(s));
+            storage.remove(prefix.concat(s));
             return this;
         }
 
@@ -169,6 +204,7 @@ public class BundleSharedPreferences implements SharedPreferences {
 
         }
     }
+
 
     public static void applyPreferencesFromBundle(SharedPreferences.Editor editor, Bundle data) {
         for (String key : data.keySet()) {

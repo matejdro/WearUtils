@@ -38,6 +38,16 @@ public class Resource<T> {
         ERROR,
         LOADING
     }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "status=" + status +
+                ", data=" + data +
+                ", message='" + message + '\'' +
+                ", errorData=" + errorData +
+                '}';
+    }
 }
 
 

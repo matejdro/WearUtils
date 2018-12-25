@@ -2,32 +2,34 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 buildscript {
-    ext {
-        defaultSupportLibVersion = "27.0.2"
-        defaultSupportWearableVersion = "2.2.0"
-        defaultArchComponentsVersion = "1.1.0"
-        defaultPlayServicesVersion = "11.8.0"
-        defaultKotlinVersion = "1.2.30"
-        defaultJunitVersion = "4.12"
-        defaultRobolectricVersion = "3.7.1"
-        defaultCoroutinesVersion = '0.22.4'
+    ext.setDefaultVersion = {name, defaultValue ->
+        if (!project.hasProperty("versions")) {
+            ext.versions = [:]
+        }
+
+        if (!versions.containsKey(name)) {
+            versions.put(name, defaultValue)
+        }
     }
 
+    setDefaultVersion("kotlin", "1.2.30")
+    setDefaultVersion("supportLib", "27.0.0")
+    setDefaultVersion("supportWearable", "2.2.0")
+    setDefaultVersion("playServices", "11.8.0")
+    setDefaultVersion("junit", "4.12")
+    setDefaultVersion("robolectric", "3.7.1")
+    setDefaultVersion("archComponents", "1.1.0")
+    setDefaultVersion("coroutines", "0.22.4")
+
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
-        def kotlinVersion = defaultKotlinVersion
-        if (projects.hasProperty("kotlinVersion")) {
-            kotlinVersion = project.properties.get("kotlinVersion")
-        }
-
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 }
-
-
 
 //noinspection GroovyMissingReturnStatement
 android {
@@ -49,26 +51,26 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
-    implementation "com.android.support:recyclerview-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
-    implementation "com.android.support:preference-v7:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    api "com.android.support:appcompat-v7:${versions.supportLib}"
+    api "com.android.support:recyclerview-v7:${versions.supportLib}"
+    api "com.android.support:preference-v7:${versions.supportLib}"
 
-    implementation "com.android.support:wear:${getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)}"
+    implementation "com.android.support:wear:${versions.supportLib}"
 
-    implementation "com.google.android.support:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
-    compileOnly "com.google.android.wearable:wearable:${getPropertyOrDefault("supportWearableVersion", defaultSupportWearableVersion)}"
+    compileOnly "com.google.android.support:wearable:${versions.supportWearable}"
+    implementation "com.google.android.wearable:wearable:${versions.supportWearable}"
 
-    implementation "android.arch.lifecycle:extensions:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
-    implementation "android.arch.lifecycle:runtime:${getPropertyOrDefault("archComponentsVersion", defaultArchComponentsVersion)}"
+    api "android.arch.lifecycle:extensions:${versions.archComponents}"
+    api "android.arch.lifecycle:runtime:${versions.archComponents}"
 
-    implementation "com.google.android.gms:play-services-wearable:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
-    implementation "com.google.android.gms:play-services-location:${getPropertyOrDefault("playServicesVersion", defaultPlayServicesVersion)}"
+    implementation "com.google.android.gms:play-services-wearable:${versions.playServices}"
+    implementation "com.google.android.gms:play-services-location:${versions.playServices}"
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getPropertyOrDefault("kotlinVersion", defaultKotlinVersion)}"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:$defaultCoroutinesVersion"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
 
-    testImplementation "org.robolectric:robolectric:${getPropertyOrDefault("robolectricVersion", defaultRobolectricVersion)}"
-    testImplementation "junit:junit:${getPropertyOrDefault("junitVersion", defaultJunitVersion)}"
+    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
+    testImplementation "junit:junit:${versions.junit}"
 }
 
 configurations.all {
@@ -78,16 +80,12 @@ configurations.all {
             if (details.requested.group == 'com.android.support'
                     && details.requested.name != 'multidex'
                     && details.requested.name != 'multidex-instrumentation') {
-                details.useVersion getPropertyOrDefault("supportLibVersion", defaultSupportLibVersion)
+                details.useVersion versions.supportLib
             }
         }
     }
 }
 
-
-repositories {
-    mavenCentral()
-}
 
 kotlin {
     experimental {

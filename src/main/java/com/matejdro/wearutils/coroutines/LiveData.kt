@@ -2,13 +2,15 @@ package com.matejdro.wearutils.coroutines
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
 
 suspend fun <T> LiveData<T>.awaitFirstValue(): T {
-    return withContext(UI) {
+    return withContext(Dispatchers.Main) {
         return@withContext suspendCancellableCoroutine<T> { continuation ->
             val observer = Observer<T> {
                 if (it != null) {
@@ -16,8 +18,8 @@ suspend fun <T> LiveData<T>.awaitFirstValue(): T {
                 }
             }
 
-            continuation.invokeOnCompletion {
-                launch(UI) {
+            continuation.invokeOnCancellation {
+                GlobalScope.launch(Dispatchers.Main) {
                     removeObserver(observer)
                 }
             }

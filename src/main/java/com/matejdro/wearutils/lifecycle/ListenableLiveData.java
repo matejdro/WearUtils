@@ -1,7 +1,7 @@
 package com.matejdro.wearutils.lifecycle;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
+import androidx.lifecycle.MutableLiveData;
 
 public class ListenableLiveData<T> extends MutableLiveData<T> {
     private LiveDataLifecycleListener listener;

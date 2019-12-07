@@ -4,7 +4,8 @@ import android.Manifest;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.annotation.RequiresPermission;
+
+import androidx.annotation.RequiresPermission;
 
 public class VibratorCompat {
     @RequiresPermission(Manifest.permission.VIBRATE)

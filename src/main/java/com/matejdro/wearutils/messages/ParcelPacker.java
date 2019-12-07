@@ -2,7 +2,8 @@ package com.matejdro.wearutils.messages;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Convenience class for easier parcelable packing for Phone &lt;&gt; wear transfer.

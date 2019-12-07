@@ -1,7 +1,8 @@
 package com.matejdro.wearutils.logging;
 
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;

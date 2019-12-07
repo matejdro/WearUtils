@@ -1,10 +1,11 @@
 package com.matejdro.wearutils.preferences.compat;
 
 import android.content.Context;
-import android.support.v7.preference.PreferenceViewHolder;
-import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SwitchPreferenceCompat;
 
 /**
  * <p>SwitchPreference that will:</p>

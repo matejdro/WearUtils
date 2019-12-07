@@ -1,8 +1,8 @@
 package com.matejdro.wearutils.lifecycle;
 
 
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 public class EmptyObserver<T> implements Observer<T> {
     @Override

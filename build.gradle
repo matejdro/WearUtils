@@ -12,9 +12,13 @@ buildscript {
         }
     }
 
-    setDefaultVersion("kotlin", "1.3.60")
-    setDefaultVersion("supportLib", "27.0.0")
-    setDefaultVersion("supportWearable", "2.2.0")
+    setDefaultVersion("kotlin", "1.3.61")
+    setDefaultVersion("appCompat", "1.1.0")
+    setDefaultVersion("recyclerView", "1.1.0")
+    setDefaultVersion("preference", "1.1.0")
+    setDefaultVersion("lifecycle", "2.1.0")
+    setDefaultVersion("wear", "1.0.0")
+    setDefaultVersion("googlewearable", "2.5.0")
     setDefaultVersion("playServices", "11.8.0")
     setDefaultVersion("junit", "4.12")
     setDefaultVersion("robolectric", "3.7.1")
@@ -33,7 +37,7 @@ buildscript {
 
 //noinspection GroovyMissingReturnStatement
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 18
@@ -51,17 +55,15 @@ android {
 }
 
 dependencies {
-    api "com.android.support:appcompat-v7:${versions.supportLib}"
-    api "com.android.support:recyclerview-v7:${versions.supportLib}"
-    api "com.android.support:preference-v7:${versions.supportLib}"
+    api "androidx.appcompat:appcompat:${versions.appCompat}"
+    api "androidx.recyclerview:recyclerview:${versions.recyclerView}"
+    api "androidx.preference:preference:${versions.preference}"
 
-    implementation "com.android.support:wear:${versions.supportLib}"
+    implementation "androidx.wear:wear:${versions.wear}"
+    implementation "com.google.android.support:wearable:${versions.googlewearable}"
 
-    compileOnly "com.google.android.support:wearable:${versions.supportWearable}"
-    implementation "com.google.android.wearable:wearable:${versions.supportWearable}"
-
-    api "android.arch.lifecycle:extensions:${versions.archComponents}"
-    api "android.arch.lifecycle:runtime:${versions.archComponents}"
+    api "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    api "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 
     implementation "com.google.android.gms:play-services-wearable:${versions.playServices}"
     implementation "com.google.android.gms:play-services-location:${versions.playServices}"
@@ -71,19 +73,6 @@ dependencies {
 
     testImplementation "org.robolectric:robolectric:${versions.robolectric}"
     testImplementation "junit:junit:${versions.junit}"
-}
-
-configurations.all {
-    resolutionStrategy {
-        eachDependency { details ->
-            // Force all of the primary support libraries to use the same version.
-            if (details.requested.group == 'com.android.support'
-                    && details.requested.name != 'multidex'
-                    && details.requested.name != 'multidex-instrumentation') {
-                details.useVersion versions.supportLib
-            }
-        }
-    }
 }
 
 

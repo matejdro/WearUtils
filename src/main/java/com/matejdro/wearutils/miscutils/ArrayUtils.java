@@ -1,6 +1,6 @@
 package com.matejdro.wearutils.miscutils;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class ArrayUtils {
     /**

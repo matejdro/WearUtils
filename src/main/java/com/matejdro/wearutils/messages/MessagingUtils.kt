@@ -3,14 +3,15 @@
 package com.matejdro.wearutils.messages
 
 import android.content.Context
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import com.matejdro.wearutils.coroutines.await
-import java.util.*
+import java.util.Collections
+import java.util.Comparator
 
 @WorkerThread
 fun getOtherNodeId(googleApiClient: GoogleApiClient): String? {

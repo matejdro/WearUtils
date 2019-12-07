@@ -2,13 +2,14 @@ package com.matejdro.wearutils.preferences.compat;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.preference.EditTextPreference;
-import android.support.v7.preference.EditTextPreferenceDialogFragmentCompat;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.EditTextPreferenceDialogFragmentCompat;
+import androidx.preference.PreferenceDialogFragmentCompat;
 
 import com.matejdro.wearutils.miscutils.HtmlCompat;
 

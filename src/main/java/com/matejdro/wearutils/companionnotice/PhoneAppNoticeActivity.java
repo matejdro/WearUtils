@@ -6,8 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.wearable.activity.ConfirmationActivity;
 import android.view.View;
+
+import androidx.wear.activity.ConfirmationActivity;
 
 import com.google.android.wearable.intent.RemoteIntent;
 import com.matejdro.wearutils.R;

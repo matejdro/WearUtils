@@ -2,8 +2,9 @@ package com.matejdro.wearutils.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.PreferenceDataStore;
+
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceDataStore;
 
 import java.util.Map;
 import java.util.Set;

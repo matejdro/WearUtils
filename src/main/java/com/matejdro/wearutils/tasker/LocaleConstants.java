@@ -16,7 +16,8 @@
 package com.matejdro.wearutils.tasker;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Contains Intent constants necessary for interacting with the plug-in API for Locale.

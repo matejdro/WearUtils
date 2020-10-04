@@ -60,6 +60,7 @@ dependencies {
     api "androidx.preference:preference:${versions.preference}"
 
     implementation "androidx.wear:wear:${versions.wear}"
+    //noinspection GradleCompatible
     implementation "com.google.android.support:wearable:${versions.googlewearable}"
 
     api "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"

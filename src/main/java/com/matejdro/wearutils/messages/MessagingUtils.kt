@@ -5,7 +5,6 @@ package com.matejdro.wearutils.messages
 import android.content.Context
 import androidx.annotation.WorkerThread
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.wearable.MessageApi
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
@@ -46,7 +45,7 @@ fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payl
     })
 }
 
-fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray, callback: ResultCallback<in MessageApi.SendMessageResult>) {
+fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray?, callback: (MessageApi.SendMessageResult) -> Unit) {
     getOtherNodeIdAsync(googleApiClient, object : NodeCallback {
         override fun onNodeRecevived(node: String?) {
             Wearable.MessageApi.sendMessage(googleApiClient, node, targetPath, payload).setResultCallback(callback)

@@ -96,7 +96,7 @@ public class BitmapUtils {
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
         } catch (FileNotFoundException e) {
-            if (e.getMessage().contains("Permission denied")) {
+            if (e.getMessage() != null && e.getMessage().contains("Permission denied")) {
                 throw new SecurityException(e.getMessage());
             }
 

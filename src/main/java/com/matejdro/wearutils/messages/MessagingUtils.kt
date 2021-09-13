@@ -58,7 +58,7 @@ suspend fun getOtherNodeSuspending(context: Context): Node? {
 
     val connectedNodes = nodeClient.connectedNodes.await()
 
-    return connectedNodes?.minWith(NodeNearbyComparator.INSTANCE)
+    return connectedNodes.minWithOrNull(NodeNearbyComparator.INSTANCE)
 }
 
 interface NodeCallback {

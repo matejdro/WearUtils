@@ -1,41 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-buildscript {
-    ext.setDefaultVersion = {name, defaultValue ->
-        if (!project.hasProperty("versions")) {
-            ext.versions = [:]
-        }
-
-        if (!versions.containsKey(name)) {
-            versions.put(name, defaultValue)
-        }
-    }
-
-    setDefaultVersion("kotlin", "1.3.61")
-    setDefaultVersion("appCompat", "1.1.0")
-    setDefaultVersion("recyclerView", "1.1.0")
-    setDefaultVersion("preference", "1.1.0")
-    setDefaultVersion("lifecycle", "2.1.0")
-    setDefaultVersion("wear", "1.0.0")
-    setDefaultVersion("googlewearable", "2.5.0")
-    setDefaultVersion("playServices", "11.8.0")
-    setDefaultVersion("junit", "4.12")
-    setDefaultVersion("robolectric", "3.7.1")
-    setDefaultVersion("archComponents", "1.1.0")
-    setDefaultVersion("coroutines", "1.3.2")
-
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-    }
-}
-
-//noinspection GroovyMissingReturnStatement
 android {
     compileSdkVersion 29
 
@@ -55,38 +20,21 @@ android {
 }
 
 dependencies {
-    api "androidx.appcompat:appcompat:${versions.appCompat}"
-    api "androidx.recyclerview:recyclerview:${versions.recyclerView}"
-    api "androidx.preference:preference:${versions.preference}"
+    implementation wearUtilsLibs.androidx.appCompat
+    implementation wearUtilsLibs.androidx.recyclerView
+    implementation wearUtilsLibs.androidx.preference
 
-    implementation "androidx.wear:wear:${versions.wear}"
-    //noinspection GradleCompatible
-    implementation "com.google.android.support:wearable:${versions.googlewearable}"
+    implementation wearUtilsLibs.androidx.wear
+    implementation wearUtilsLibs.google.wearableSupport
 
-    api "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
-    api "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+    implementation wearUtilsLibs.androidx.lifecycle.extensions
+    implementation wearUtilsLibs.androidx.lifecycle.runtime
 
-    implementation "com.google.android.gms:play-services-wearable:${versions.playServices}"
-    implementation "com.google.android.gms:play-services-location:${versions.playServices}"
+    implementation wearUtilsLibs.google.playServices.wearable
+    implementation wearUtilsLibs.google.playServices.location
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    compileOnly wearUtilsLibs.kotlin.coroutines
 
-    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
-    testImplementation "junit:junit:${versions.junit}"
-}
-
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
-
-def getPropertyOrDefault(property, defaultValue) {
-    if (!project.hasProperty(property)) {
-        return defaultValue
-    }
-
-    return project.properties.get(property)
+    testImplementation wearUtilsLibs.robolectric
+    testImplementation wearUtilsLibs.junit4
 }

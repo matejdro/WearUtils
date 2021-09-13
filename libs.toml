@@ -1,18 +1,18 @@
 [versions]
-kotlin-coroutines = "1.3.2"
+kotlin-coroutines = "1.5.2"
 
-androidx-appCompat = "1.1.0"
-androidx-lifecycle = "2.1.0"
-androidx-preference = "1.1.0"
-androidx-recyclerView = "1.1.0"
-androidx-wear = "1.0.0"
+androidx-appCompat = "1.3.1"
+androidx-lifecycle = "2.3.1"
+androidx-preference = "1.1.1"
+androidx-recyclerView = "1.2.1"
+androidx-wear = "1.1.0"
 
-google-playServices-location = "11.8.0"
-google-playServices-wearable = "11.8.0"
-google-wearableSupport = "2.5.0"
+google-playServices-location = "18.0.0"
+google-playServices-wearable = "17.1.0"
+google-wearableSupport = "2.8.1"
 
-junit4 = "4.12"
-robolectric = "3.7.1"
+junit4 = "4.13.2"
+robolectric = "4.6.1"
 
 [libraries]
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin.coroutines" }

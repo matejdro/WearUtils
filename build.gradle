@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 18
-        targetSdkVersion 27
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -27,7 +27,6 @@ dependencies {
     implementation wearUtilsLibs.androidx.wear
     implementation wearUtilsLibs.google.wearableSupport
 
-    implementation wearUtilsLibs.androidx.lifecycle.extensions
     implementation wearUtilsLibs.androidx.lifecycle.runtime
 
     implementation wearUtilsLibs.google.playServices.wearable

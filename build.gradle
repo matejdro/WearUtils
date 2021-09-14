@@ -33,6 +33,7 @@ dependencies {
     implementation wearUtilsLibs.google.playServices.location
 
     compileOnly wearUtilsLibs.kotlin.coroutines
+    compileOnly wearUtilsLibs.kotlin.coroutines.playServices
 
     testImplementation wearUtilsLibs.robolectric
     testImplementation wearUtilsLibs.junit4

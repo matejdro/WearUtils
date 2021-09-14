@@ -3,6 +3,7 @@ package com.matejdro.wearutils.messages;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataClient;
 import com.google.android.gms.wearable.DataItemAsset;
 import com.google.android.gms.wearable.Wearable;
 

@@ -4,13 +4,11 @@ package com.matejdro.wearutils.messages
 
 import android.content.Context
 import androidx.annotation.WorkerThread
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.wearable.MessageApi
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import com.matejdro.wearutils.coroutines.await
-import java.util.Collections
-import java.util.Comparator
+import java.util.*
 
 @WorkerThread
 fun getOtherNodeId(googleApiClient: GoogleApiClient): String? {
@@ -35,6 +33,36 @@ fun getOtherNodeIdAsync(googleApiClient: GoogleApiClient, callback: NodeCallback
 
         callback.onNodeRecevived(node)
     }
+}
+
+suspend fun NodeClient.getNearestNodeId(): String? {
+    val connectedNodes = this.connectedNodes.await()
+            .sortedWith(NodeNearbyComparator.INSTANCE)
+
+    return connectedNodes.firstOrNull()?.id
+}
+
+/**
+ * @return if successful, an ID used to identify the sent message. If no client was connected, null. If sending failed, [ApiException].
+ * A successful result doesn't guarantee delivery.
+ */
+suspend fun MessageClient.sendMessageToNearestClient(nodeClient: NodeClient, path: String, data: ByteArray? = null): Int? {
+    val nearestNode = nodeClient.getNearestNodeId() ?: return null
+    return this.sendMessage(nearestNode, path, data).await()
+}
+
+/**
+ * @return if successful, an ID used to identify the sent message. If no client was connected, null. If sending failed, [ApiException].
+ * A successful result doesn't guarantee delivery.
+ */
+suspend fun MessageClient.sendMessageToNearestClient(
+        nodeClient: NodeClient,
+        path: String,
+        data: ByteArray? = null,
+        messageOptions: MessageOptions
+): Int? {
+    val nearestNode = nodeClient.getNearestNodeId() ?: return null
+    return this.sendMessage(nearestNode, path, data, messageOptions).await()
 }
 
 fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray) {

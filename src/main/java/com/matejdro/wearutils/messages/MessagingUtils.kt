@@ -26,7 +26,7 @@ fun getOtherNodeIdAsync(googleApiClient: GoogleApiClient, callback: NodeCallback
         val connectedNodes = getConnectedNodesResult.nodes
 
         var node: String? = null
-        if (connectedNodes != null && !connectedNodes.isEmpty()) {
+        if (connectedNodes != null && connectedNodes.isNotEmpty()) {
             Collections.sort(connectedNodes, NodeNearbyComparator.INSTANCE)
             node = connectedNodes[0].id
         }

@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -130,7 +131,6 @@ public class StringListPreference extends DialogPreference {
         });
 
         Window window = dialog.getWindow();
-        //noinspection ConstantConditions
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
@@ -157,7 +157,6 @@ public class StringListPreference extends DialogPreference {
         adapter.notifyItemInserted(itemsDraft.size() - 1);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         setItems(loadPersistedValue(restorePersistedValue ? getPersistedString(null) : (String) defaultValue));
@@ -246,8 +245,9 @@ public class StringListPreference extends DialogPreference {
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ListItemHolder> {
+        @NonNull
         @Override
-        public ListItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             TextView view = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.simple_selectable_list_item, parent, false);
 
             final ListItemHolder holder = new ListItemHolder(view);

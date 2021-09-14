@@ -3,6 +3,8 @@ package pl.tajchert.exceptionwear;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
@@ -41,13 +43,14 @@ public class ExceptionDataListenerService extends WearableListenerService {
     private static ExceptionWearHandler mExceptionWearHandler;
 
     @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        if(messageEvent.getPath().equals("/exceptionwear/wear_error")) {
+        if (messageEvent.getPath().equals("/exceptionwear/wear_error")) {
             DataMap map = DataMap.fromByteArray(messageEvent.getData());
             readException(map);
         }
     }
+
     private void readException(DataMap map) {
         ByteArrayInputStream bis = new ByteArrayInputStream(map.getByteArray("exception"));
         try {
@@ -69,7 +72,7 @@ public class ExceptionDataListenerService extends WearableListenerService {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (@SuppressWarnings("TryWithIdenticalCatches") ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

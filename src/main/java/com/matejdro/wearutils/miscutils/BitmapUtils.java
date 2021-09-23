@@ -95,7 +95,8 @@ public class BitmapUtils {
         InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | UnsupportedOperationException e) {
+            // UnsupportedOperationException is sometimes thrown if image cannot be retrieved
             if (e.getMessage() != null && e.getMessage().contains("Permission denied")) {
                 throw new SecurityException(e.getMessage());
             }

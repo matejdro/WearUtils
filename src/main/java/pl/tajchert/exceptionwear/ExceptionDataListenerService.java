@@ -10,7 +10,6 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import pl.tajchert.exceptionwear.wear.WearExceptionTools;
@@ -52,12 +51,17 @@ public class ExceptionDataListenerService extends WearableListenerService {
     }
 
     private void readException(DataMap map) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(map.getByteArray("exception"));
+        ByteArrayInputStream bis = new ByteArrayInputStream(map.getByteArray("stack_trace"));
         try {
             ObjectInputStream ois = new ObjectInputStream(bis);
-            Throwable throwableException = (Throwable) ois.readObject();
+            StackTraceElement[] throwableStackTrace = (StackTraceElement[]) ois.readObject();
 
-            if(mExceptionWearHandler != null){
+            String message = map.getString("message");
+            String type = map.getString("type");
+
+            Exception throwableException = WatchException.create(message, type, throwableStackTrace);
+
+            if (mExceptionWearHandler != null) {
                 mExceptionWearHandler.handleException(throwableException, map);
             } else {
                 Log.e(WearExceptionTools.EXCEPTION_WEAR_TAG, "Error from Wear: " + throwableException.getMessage()
@@ -70,9 +74,7 @@ public class ExceptionDataListenerService extends WearableListenerService {
                 throw new RuntimeException(throwableException);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -15,13 +15,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import pl.tajchert.exceptionwear.wear.SendByteArrayToNode;
-import pl.tajchert.exceptionwear.wear.WearExceptionTools;
 import timber.log.Timber;
 
 
 @SuppressLint("Registered")
 public class ExceptionService extends JobIntentService {
-    private static final String EXTRA_EXCEPTION = WearExceptionTools.EXCEPTION_WEAR_TAG + "/EXTRA_EXCEPTION";
+    private static final String EXTRA_MESSAGE = "message";
+    private static final String EXTRA_STACK_TRACE = "stack_trace";
+    private static final String EXTRA_TYPE = "type";
 
     private ByteArrayOutputStream bos;
     private ObjectOutputStream oos;
@@ -45,12 +46,12 @@ public class ExceptionService extends JobIntentService {
         }
     }
 
-    private DataMap createExceptionInformation(Intent intent){
+    private DataMap createExceptionInformation(Intent intent) {
 
         bos = new ByteArrayOutputStream();
         try {
             oos = new ObjectOutputStream(bos);
-            oos.writeObject(intent.getSerializableExtra(EXTRA_EXCEPTION));
+            oos.writeObject(intent.getSerializableExtra(EXTRA_STACK_TRACE));
         } catch (IOException e) {
             Timber.e("createExceptionInformation error while getting exception information.");
         }
@@ -65,15 +66,19 @@ public class ExceptionService extends JobIntentService {
         dataMap.putString("manufacturer", Build.MANUFACTURER);
         dataMap.putString("product", Build.PRODUCT);
         dataMap.putString("api_level", Integer.toString(Build.VERSION.SDK_INT));
+        dataMap.putString("message", intent.getStringExtra(EXTRA_MESSAGE));
+        dataMap.putString("type", intent.getStringExtra(EXTRA_TYPE));
 
-        dataMap.putByteArray("exception", exceptionData);
+        dataMap.putByteArray("stack_trace", exceptionData);
 
         return dataMap;
     }
 
     public static void reportException(Context context, Throwable ex) {
-        Intent errorIntent = new Intent(context, ExceptionService.class);
-        errorIntent.putExtra(EXTRA_EXCEPTION, ex);
-        context.startService(errorIntent);
+        Intent errorIntent = new Intent();
+        errorIntent.putExtra(EXTRA_MESSAGE, ex.getMessage());
+        errorIntent.putExtra(EXTRA_TYPE, ex.getClass().getName());
+        errorIntent.putExtra(EXTRA_STACK_TRACE, ex.getStackTrace());
+        JobIntentService.enqueueWork(context, ExceptionService.class, 7777, errorIntent);
     }
 }

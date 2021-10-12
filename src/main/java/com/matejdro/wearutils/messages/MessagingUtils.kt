@@ -47,8 +47,14 @@ suspend fun NodeClient.getNearestNodeId(): String? {
  * A successful result doesn't guarantee delivery.
  */
 suspend fun MessageClient.sendMessageToNearestClient(nodeClient: NodeClient, path: String, data: ByteArray? = null): Int? {
-    val nearestNode = nodeClient.getNearestNodeId() ?: return null
-    return this.sendMessage(nearestNode, path, data).await()
+    try {
+        val nearestNode = nodeClient.getNearestNodeId() ?: return null
+        return this.sendMessage(nearestNode, path, data).await()
+    } catch (e: ApiException) {
+        // Api Exception usually mean bluetooth connection failure. We can't do anything.
+        return null
+
+    }
 }
 
 /**

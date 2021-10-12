@@ -1,6 +1,7 @@
 package com.matejdro.wearutils.companionnotice;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,7 +51,11 @@ public class PhoneAppNoticeActivity extends Activity {
 
                 }
 
-                startActivity(confirmationIntent);
+                try {
+                    startActivity(confirmationIntent);
+                } catch (ActivityNotFoundException e) {
+                    // Don't show confirmation, just exit
+                }
                 finish();
             }
         };

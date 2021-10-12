@@ -17,6 +17,8 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.wearable.intent.RemoteIntent;
 import com.matejdro.wearutils.R;
 
+import timber.log.Timber;
+
 public abstract class WearCompanionPhoneActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, ResultCallback<CapabilityApi.GetCapabilityResult> {
     private GoogleApiClient googleApiClient;
 
@@ -77,12 +79,16 @@ public abstract class WearCompanionPhoneActivity extends AppCompatActivity imple
                 .show();
     }
 
-    protected void openWatchPlayStorePage()  {
+    protected void openWatchPlayStorePage() {
         Intent playStoreIntent = new Intent(Intent.ACTION_VIEW);
         playStoreIntent.addCategory(Intent.CATEGORY_BROWSABLE);
         playStoreIntent.setData(Uri.parse("market://details?id=" + getPackageName()));
 
-        RemoteIntent.startRemoteActivity(this, playStoreIntent, null);
+        try {
+            RemoteIntent.startRemoteActivity(this, playStoreIntent, null);
+        } catch (Exception e) {
+            Timber.e(e, "Activity start crash");
+        }
     }
 
     public GoogleApiClient getGoogleApiClient() {

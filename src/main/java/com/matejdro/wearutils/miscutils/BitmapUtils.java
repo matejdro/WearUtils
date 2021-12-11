@@ -33,13 +33,11 @@ public class BitmapUtils {
         }
     }
 
-    public static Bitmap shrinkPreservingRatio(Bitmap original, int newWidth, int newHeight)
-    {
+    public static Bitmap shrinkPreservingRatio(Bitmap original, int newWidth, int newHeight) {
         return shrinkPreservingRatio(original, newWidth, newHeight, true);
     }
 
-    public static Bitmap shrinkPreservingRatio(Bitmap original, int newWidth, int newHeight, boolean filter)
-    {
+    public static Bitmap shrinkPreservingRatio(Bitmap original, int newWidth, int newHeight, boolean filter) {
         if (original == null) {
             return null;
         }
@@ -51,12 +49,9 @@ public class BitmapUtils {
         int originalWidth = original.getWidth();
         int originalHeight = original.getHeight();
 
-        if (newWidth / (float) originalWidth < newHeight / (float) originalHeight)
-        {
+        if (newWidth / (float) originalWidth < newHeight / (float) originalHeight) {
             newHeight = originalHeight * newWidth / originalWidth;
-        }
-        else
-        {
+        } else {
             newWidth = originalWidth * newHeight / originalHeight;
         }
 
@@ -86,7 +81,11 @@ public class BitmapUtils {
 
     @Nullable
     @TargetApi(Build.VERSION_CODES.M)
-    public static Bitmap getBitmap(Context context, Icon icon) {
+    public static Bitmap getBitmap(Context context, @Nullable Icon icon) {
+        if (icon == null) {
+            return null;
+        }
+
         return getBitmap(icon.loadDrawable(context));
     }
 

@@ -3,7 +3,7 @@ package com.matejdro.wearutils.preferences.definition;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class EnumPreferenceDefinition<T extends Enum<T>> implements PreferenceDefinition {
+public class EnumPreferenceDefinition<T extends Enum<T>> implements PreferenceDefinition<T> {
     private final String key;
     private final T defaultValue;
     private final Method valueOfMethod;
@@ -26,7 +26,7 @@ public class EnumPreferenceDefinition<T extends Enum<T>> implements PreferenceDe
     }
 
     @Override
-    public Object getDefaultValue() {
+    public T getDefaultValue() {
         return defaultValue;
     }
 

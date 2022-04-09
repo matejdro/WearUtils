@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import kotlin.ExceptionsKt;
 import timber.log.Timber;
 
 public class FileLogger extends Timber.AppTaggedDebugTree {
@@ -130,6 +131,10 @@ public class FileLogger extends Timber.AppTaggedDebugTree {
                             message
             );
             writer.newLine();
+
+            if (throwable != null) {
+                writer.write(ExceptionsKt.stackTraceToString(throwable));
+            }
 
             flushHandler.removeMessages(MESSAGE_FLUSH_LOG);
 

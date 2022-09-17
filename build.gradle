@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 18
@@ -32,8 +32,9 @@ dependencies {
     implementation wearUtilsLibs.google.playServices.wearable
     implementation wearUtilsLibs.google.playServices.location
 
-    compileOnly wearUtilsLibs.kotlin.coroutines
-    compileOnly wearUtilsLibs.kotlin.coroutines.playServices
+    implementation wearUtilsLibs.kotlin.coroutines
+    implementation wearUtilsLibs.kotlin.coroutines.android
+    implementation wearUtilsLibs.kotlin.coroutines.playServices
 
     testImplementation wearUtilsLibs.robolectric
     testImplementation wearUtilsLibs.junit4

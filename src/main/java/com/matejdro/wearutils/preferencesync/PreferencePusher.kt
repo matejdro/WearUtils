@@ -14,7 +14,7 @@ import timber.log.Timber
 
 object PreferencePusher {
     private const val TAG = "PreferencePusher"
-    fun pushPreferences(connectedApiClient: GoogleApiClient?, preferences: SharedPreferences, wearSchemePrefix: String, urgent: Boolean): PendingResult<DataItemResult> {
+    fun pushPreferences(connectedApiClient: GoogleApiClient, preferences: SharedPreferences, wearSchemePrefix: String, urgent: Boolean): PendingResult<DataItemResult> {
         val putDataMapRequest = PutDataMapRequest.create(wearSchemePrefix)
         val dataMap = putDataMapRequest.dataMap
         for ((key, value) in preferences.all) {

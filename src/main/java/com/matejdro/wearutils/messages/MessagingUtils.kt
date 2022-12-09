@@ -74,15 +74,15 @@ suspend fun MessageClient.sendMessageToNearestClient(
 fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray) {
     getOtherNodeIdAsync(googleApiClient, object : NodeCallback {
         override fun onNodeRecevived(node: String?) {
-            Wearable.MessageApi.sendMessage(googleApiClient, node, targetPath, payload)
+            Wearable.MessageApi.sendMessage(googleApiClient, requireNotNull(node), targetPath, payload)
         }
     })
 }
 
-fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray?, callback: (MessageApi.SendMessageResult) -> Unit) {
+fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray, callback: (MessageApi.SendMessageResult) -> Unit) {
     getOtherNodeIdAsync(googleApiClient, object : NodeCallback {
         override fun onNodeRecevived(node: String?) {
-            Wearable.MessageApi.sendMessage(googleApiClient, node, targetPath, payload).setResultCallback(callback)
+            Wearable.MessageApi.sendMessage(googleApiClient, requireNotNull(node), targetPath, payload).setResultCallback(callback)
         }
     })
 }

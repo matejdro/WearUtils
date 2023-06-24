@@ -25,6 +25,8 @@ import androidx.lifecycle.Observer;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import kotlin.Unit;
+
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
  * navigation and Snackbar messages.
@@ -70,6 +72,6 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
      */
     @MainThread
     public void call() {
-        setValue(null);
+        setValue((T) Unit.INSTANCE);
     }
 }

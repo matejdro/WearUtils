@@ -63,6 +63,7 @@ abstract class TaskerPreferenceDisplayActivity : TaskerSetupActivity() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         save()
         super.onBackPressed()

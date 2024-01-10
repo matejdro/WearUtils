@@ -44,6 +44,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 import java.net.URISyntaxException;
@@ -67,7 +68,7 @@ public class TaskerPlugin {
     private final static int RANDOM_HISTORY_SIZE = 100;
 
     /**
-     * Action that the EditActivity for an event plugin should be launched by
+     * 	Action that the EditActivity for an event plugin should be launched by
      */
     public final static String ACTION_EDIT_EVENT = BASE_KEY + ".ACTION_EDIT_EVENT";
 
@@ -91,7 +92,7 @@ public class TaskerPlugin {
     private final static String EXTRA_VARIABLES_BUNDLE = EXTRAS_PREFIX + "VARIABLES";
 
     /**
-     * Host capabilities, passed to plugin with edit intents
+     * 	Host capabilities, passed to plugin with edit intents
      */
     private final static String EXTRA_HOST_CAPABILITIES = EXTRAS_PREFIX + "HOST_CAPABILITIES";
 
@@ -135,9 +136,9 @@ public class TaskerPlugin {
      *
      * @see #setKeyEncoding(Bundle, String[], Encoding)
      */
-    public enum Encoding {
-        JSON
-    }
+    public enum Encoding {JSON}
+
+    ;
 
     private final static String BUNDLE_KEY_ENCODING_JSON_KEYS = BASE_KEY + ".JSON_ENCODED_KEYS";
 
@@ -151,9 +152,9 @@ public class TaskerPlugin {
     }
 
     /**
-     * Miscellaneous operational hints going one way or the other
      *
-     * @see Setting#hostSupportsVariableReturn(Bundle)
+     *  Miscellaneous operational hints going one way or the other
+     *  @see Setting#hostSupportsVariableReturn(Bundle)
      */
 
     private final static String EXTRA_HINTS_BUNDLE = EXTRAS_PREFIX + "HINTS";
@@ -163,34 +164,36 @@ public class TaskerPlugin {
     private final static String BUNDLE_KEY_HINT_TIMEOUT_MS = BUNDLE_KEY_HINT_PREFIX + "TIMEOUT";
 
     /**
-     * @see #hostSupportsRelevantVariables(Bundle)
-     * @see #addRelevantVariableList(Intent, String[])
-     * @see #getRelevantVariableList(Bundle)
+     *
+     *    @see #hostSupportsRelevantVariables(Bundle)
+     *  @see #addRelevantVariableList(Intent, String[])
+     *  @see #getRelevantVariableList(Bundle)
      */
     private final static String BUNDLE_KEY_RELEVANT_VARIABLES = BASE_KEY + ".RELEVANT_VARIABLES";
 
-    public static boolean hostSupportsRelevantVariables(Bundle extrasFromHost ) {
-        return hostSupports( extrasFromHost,  EXTRA_HOST_CAPABILITY_RELEVANT_VARIABLES);
+
+    public static boolean hostSupportsRelevantVariables(Bundle extrasFromHost) {
+        return hostSupports(extrasFromHost, EXTRA_HOST_CAPABILITY_RELEVANT_VARIABLES);
     }
 
     /**
      * Specifies to host which variables might be used by the plugin.
-     * <p>
+     *
      * Used in EditActivity, before setResult().
      *
-     * @param intentToHost  the intent being returned to the host
-     * @param variableNames array of relevant variable names
+     * @param  intentToHost the intent being returned to the host
+     * @param  variableNames array of relevant variable names
      */
-    public static void addRelevantVariableList(Intent intentToHost, String [] variableNames ) {
+    public static void addRelevantVariableList(Intent intentToHost, String[] variableNames) {
         intentToHost.putExtra(BUNDLE_KEY_RELEVANT_VARIABLES, variableNames);
     }
 
     /**
      * Validate a variable name.
-     * <p>
+     *
      * The basic requirement for variables from a plugin is that they must be all lower-case.
      *
-     * @param varName name to check
+     * @param  varName name to check
      */
     public static boolean variableNameValid(String varName) {
 
@@ -209,7 +212,7 @@ public class TaskerPlugin {
                 else
                     Log.d(TAG, "variableNameValid: name not local: " + varName);
             } else
-                Log.d(TAG, "variableNameValid: invalid name: " + varName );
+                Log.d(TAG, "variableNameValid: invalid name: " + varName);
         }
 
         return validFlag;
@@ -225,7 +228,7 @@ public class TaskerPlugin {
      */
     public static String[] getRelevantVariableList(Bundle fromHostIntentExtras) {
 
-        String[] relevantVars = (String[]) getBundleValueSafe(fromHostIntentExtras, BUNDLE_KEY_RELEVANT_VARIABLES, String[].class, "getRelevantVariableList" );
+        String[] relevantVars = (String[]) getBundleValueSafe(fromHostIntentExtras, BUNDLE_KEY_RELEVANT_VARIABLES, String[].class, "getRelevantVariableList");
 
         if ( relevantVars == null )
             relevantVars = new String [0];
@@ -255,15 +258,15 @@ public class TaskerPlugin {
 
     /**
      * Used by: plugin EditActivity
-     * <p>
+     *
      * Specify the encoding for a set of bundle keys.
-     * <p>
+     *
      * This is completely optional and currently only necessary if using Setting#setVariableReplaceKeys
      * where the corresponding values of some of the keys specified are JSON encoded.
      *
-     * @param resultBundleToHost the bundle being returned to the host
-     * @param keys               the keys being returned to the host which are encoded in some way
-     * @param encoding           the encoding of the values corresponding to the specified keys
+     * @param  resultBundleToHost the bundle being returned to the host
+     * @param keys the keys being returned to the host which are encoded in some way
+     * @param encoding the encoding of the values corresponding to the specified keys
      * @see #setVariableReplaceKeys(Bundle, String[])
      * @see #hostSupportsKeyEncoding(Bundle, Encoding)
      */
@@ -273,7 +276,7 @@ public class TaskerPlugin {
                     keys, resultBundleToHost, BUNDLE_KEY_ENCODING_JSON_KEYS, "setValueEncoding"
             );
         else
-            Log.e( TAG, "unknown encoding: " + encoding);
+            Log.e(TAG, "unknown encoding: " + encoding);
     }
 
     // ----------------------------- SETTING PLUGIN ONLY --------------------------------- //
@@ -300,31 +303,31 @@ public class TaskerPlugin {
         private final static String BUNDLE_KEY_VARIABLE_REPLACE_STRINGS = EXTRAS_PREFIX + "VARIABLE_REPLACE_KEYS";
 
         /**
-         * @see #requestTimeoutMS(android.content.Intent, int)
+         *    @see #requestTimeoutMS(android.content.Intent, int)
          */
         private final static String EXTRA_REQUESTED_TIMEOUT = EXTRAS_PREFIX + "REQUESTED_TIMEOUT";
 
         /**
-         * @see #requestTimeoutMS(android.content.Intent, int)
+         *    @see #requestTimeoutMS(android.content.Intent, int)
          */
 
         public final static int REQUESTED_TIMEOUT_MS_NONE = 0;
 
         /**
-         * @see #requestTimeoutMS(android.content.Intent, int)
+         *    @see #requestTimeoutMS(android.content.Intent, int)
          */
 
         public final static int REQUESTED_TIMEOUT_MS_MAX = 3599000;
 
         /**
-         * @see #requestTimeoutMS(android.content.Intent, int)
+         *    @see #requestTimeoutMS(android.content.Intent, int)
          */
 
         public final static int REQUESTED_TIMEOUT_MS_NEVER = REQUESTED_TIMEOUT_MS_MAX + 1000;
 
         /**
          *  @see #signalFinish(Context, Intent, int, Bundle)
-         *  @see Host#addCompletionIntent(Intent, Intent)
+         *  @see #addCompletionIntent(Intent, Intent, ComponentName, boolean)
          */
         private final static String EXTRA_PLUGIN_COMPLETION_INTENT = EXTRAS_PREFIX + "COMPLETION_INTENT";
 
@@ -336,7 +339,14 @@ public class TaskerPlugin {
 
         /**
          * @see #signalFinish(Context, Intent, int, Bundle)
-         * @see Host#getSettingResultCode(Intent)
+         * @see #addCompletionIntent(Intent, Intent, ComponentName, boolean)
+         */
+        public final static String EXTRA_CALL_SERVICE_PACKAGE = BASE_KEY + ".EXTRA_CALL_SERVICE_PACKAGE";
+        public final static String EXTRA_CALL_SERVICE = BASE_KEY + ".EXTRA_CALL_SERVICE";
+        public final static String EXTRA_CALL_SERVICE_FOREGROUND = BASE_KEY + ".EXTRA_CALL_SERVICE_FOREGROUND";
+        /**
+         *  @see #signalFinish(Context, Intent, int, Bundle)
+         *  @see Host#getSettingResultCode(Intent)
          */
 
         public final static int RESULT_CODE_OK = Activity.RESULT_OK;
@@ -364,7 +374,7 @@ public class TaskerPlugin {
          * @param  extrasFromHost intent extras from the intent received by the edit activity
          * @see #setVariableReplaceKeys(Bundle, String[])
          */
-        public static boolean hostSupportsOnFireVariableReplacement(Bundle extrasFromHost ) {
+        public static boolean hostSupportsOnFireVariableReplacement(Bundle extrasFromHost) {
             return hostSupports( extrasFromHost, EXTRA_HOST_CAPABILITY_SETTING_FIRE_VARIABLE_REPLACEMENT );
         }
 
@@ -411,16 +421,16 @@ public class TaskerPlugin {
         /**
          * Request the host to wait the specified number of milliseconds before continuing.
          * Note that the host may choose to ignore the request.
-         * <p>
+         *
          * Maximum value is REQUESTED_TIMEOUT_MS_MAX.
          * Also available are REQUESTED_TIMEOUT_MS_NONE (continue immediately without waiting
          * for the plugin to finish) and REQUESTED_TIMEOUT_MS_NEVER (wait forever for
          * a result).
-         * <p>
+         *
          * Used in EditActivity, before setResult().
          *
-         * @param intentToHost the intent being returned to the host
-         * @param timeoutMS
+         * @param  intentToHost the intent being returned to the host
+         * @param  timeoutMS
          */
         public static void requestTimeoutMS(Intent intentToHost, int timeoutMS) {
             if (timeoutMS < 0)
@@ -429,8 +439,8 @@ public class TaskerPlugin {
                 if (
                         (timeoutMS > REQUESTED_TIMEOUT_MS_MAX) &&
                                 (timeoutMS != REQUESTED_TIMEOUT_MS_NEVER)
-                        ) {
-                    Log.w(TAG, "requestTimeoutMS: requested timeout " + timeoutMS + " exceeds maximum, setting to max (" + REQUESTED_TIMEOUT_MS_MAX + ")" );
+                ) {
+                    Log.w(TAG, "requestTimeoutMS: requested timeout " + timeoutMS + " exceeds maximum, setting to max (" + REQUESTED_TIMEOUT_MS_MAX + ")");
                     timeoutMS = REQUESTED_TIMEOUT_MS_MAX;
                 }
                 intentToHost.putExtra( EXTRA_REQUESTED_TIMEOUT, timeoutMS );
@@ -447,7 +457,7 @@ public class TaskerPlugin {
          * @see #hostSupportsOnFireVariableReplacement(Bundle)
          * @see #setKeyEncoding(Bundle, String[], Encoding)
          */
-        public static void setVariableReplaceKeys(Bundle resultBundleToHost, String [] listOfKeyNames ) {
+        public static void setVariableReplaceKeys(Bundle resultBundleToHost, String[] listOfKeyNames) {
             addStringArrayToBundleAsString(
                     listOfKeyNames, resultBundleToHost, BUNDLE_KEY_VARIABLE_REPLACE_STRINGS,
                     "setVariableReplaceKeys"
@@ -506,7 +516,19 @@ public class TaskerPlugin {
                         if (vars != null)
                             completionIntent.putExtra(EXTRA_VARIABLES_BUNDLE, vars);
 
-                        context.sendBroadcast(completionIntent);
+                        String callServicePackage = (String) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE_PACKAGE, String.class, "signalFinish");
+                        String callService = (String) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE, String.class, "signalFinish");
+                        Boolean foreground = (Boolean) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE_FOREGROUND, Boolean.class, "signalFinish");
+                        if (callServicePackage != null && callService != null && foreground != null) {
+                            completionIntent.setComponent(new ComponentName(callServicePackage, callService));
+                            if (foreground && android.os.Build.VERSION.SDK_INT >= 26) {
+                                context.startForegroundService(completionIntent);
+                            } else {
+                                context.startService(completionIntent);
+                            }
+                        } else {
+                            context.sendBroadcast(completionIntent);
+                        }
 
                         okFlag = true;
                     } catch (URISyntaxException e) {
@@ -523,8 +545,9 @@ public class TaskerPlugin {
          * Used by: plugin FireReceiver.
          * Requires Tasker 4.7+
          *
-         * @param extrasFromHost intent extras from the intent received by the FireReceiver
+         * @param  extrasFromHost intent extras from the intent received by the FireReceiver
          * @return timeoutMS the hosts timeout setting for the action or -1 if no hint is available.
+         *
          * @see #REQUESTED_TIMEOUT_MS_NONE, REQUESTED_TIMEOUT_MS_MAX, REQUESTED_TIMEOUT_MS_NEVER
          */
         public static int getHintTimeoutMS(Bundle extrasFromHost) {
@@ -550,6 +573,11 @@ public class TaskerPlugin {
     public static class Condition {
 
         /**
+         * @see #getResultReceiver(Intent)
+         */
+        public final static String EXTRA_RESULT_RECEIVER = BASE_KEY + ".EXTRA_RESULT_RECEIVER";
+
+        /**
          * Used by: plugin QueryReceiver
          *
          * Indicates to plugin whether the host will process variables which it passes back
@@ -559,6 +587,14 @@ public class TaskerPlugin {
          */
         public static boolean hostSupportsVariableReturn(Bundle extrasFromHost) {
             return hostSupports(extrasFromHost, EXTRA_HOST_CAPABILITY_CONDITION_RETURN_VARIABLES);
+        }
+
+        public static ResultReceiver getResultReceiver(Intent intentFromHost) {
+            if (intentFromHost == null) {
+                return null;
+            }
+            return (ResultReceiver) getExtraValueSafe(intentFromHost, EXTRA_RESULT_RECEIVER, ResultReceiver.class, "getResultReceiver");
+
         }
     }
 
@@ -571,7 +607,7 @@ public class TaskerPlugin {
         private final static String EXTRA_REQUEST_QUERY_PASS_THROUGH_DATA = EXTRAS_PREFIX + "PASS_THROUGH_DATA";
 
         /**
-         * @param extrasFromHost intent extras from the intent received by the QueryReceiver
+         * @param  extrasFromHost intent extras from the intent received by the QueryReceiver
          * @see #addPassThroughData(Intent, Bundle)
          */
         public static boolean hostSupportsRequestQueryDataPassThrough(Bundle extrasFromHost) {
@@ -582,28 +618,29 @@ public class TaskerPlugin {
          * Specify a bundle of data (probably representing whatever change happened in the condition)
          * which will be included in the QUERY_CONDITION broadcast sent by the host for each
          * event instance of the plugin.
-         * <p>
+         *
          * The minimal purpose is to enable the plugin to associate a QUERY_CONDITION to the
          * with the REQUEST_QUERY that caused it.
-         * <p>
+         *
          * Note that for security reasons it is advisable to also store a message ID with the bundle
          * which can be compared to known IDs on receipt. The host cannot validate the source of
          * REQUEST_QUERY intents so fake data may be passed. Replay attacks are also possible.
          * addPassThroughMesssageID() can be used to add an ID if the plugin doesn't wish to add it's
          * own ID to the pass through bundle.
-         * <p>
+         *
          * Note also that there are several situations where REQUEST_QUERY will not result in a
          * QUERY_CONDITION intent (e.g. event throttling by the host), so plugin-local data
          * indexed with a message ID needs to be timestamped and eventually timed-out.
-         * <p>
+         *
          * This function can be called multiple times, each time all keys in data will be added to
          * that of previous calls.
          *
          * @param requestQueryIntent intent being sent to the host
-         * @param data               the data to be passed-through
+         * @param data the data to be passed-through
          * @see #hostSupportsRequestQueryDataPassThrough(Bundle)
          * @see #retrievePassThroughData(Intent)
          * @see #addPassThroughMessageID
+         *
          */
         public static void addPassThroughData(Intent requestQueryIntent, Bundle data) {
 
@@ -615,7 +652,7 @@ public class TaskerPlugin {
         /**
          * Retrieve the pass through data from a QUERY_REQUEST from the host which was generated
          * by a REQUEST_QUERY from the plugin.
-         * <p>
+         *
          * Note that if addPassThroughMessageID() was previously called, the data will contain an extra
          * key TaskerPlugin.Event.PASS_THOUGH_BUNDLE_MESSAGE_ID_KEY.
          *
@@ -636,15 +673,17 @@ public class TaskerPlugin {
         /**
          * Add a message ID to a REQUEST_QUERY intent which will then be included in the corresponding
          * QUERY_CONDITION broadcast sent by the host for each event instance of the plugin.
-         * <p>
+         *
          * The minimal purpose is to enable the plugin to associate a QUERY_CONDITION to the
          * with the REQUEST_QUERY that caused it. It also allows the message to be verified
          * by the plugin to prevent e.g. replay attacks
          *
          * @param requestQueryIntent intent being sent to the host
-         * @return an ID for the bundle so it can be identified and the caller verified when it is again received by the plugin
+         * @return a guaranteed non-repeating within 100 calls message ID
          * @see #hostSupportsRequestQueryDataPassThrough(Bundle)
          * @see #retrievePassThroughData(Intent)
+         * @return an ID for the bundle so it can be identified and the caller verified when it is again received by the plugin
+         *
          */
         public static int addPassThroughMessageID(Intent requestQueryIntent) {
 
@@ -665,7 +704,7 @@ public class TaskerPlugin {
          * @return the ID which was passed through by the host, or -1 if no ID was found
          * @see #hostSupportsRequestQueryDataPassThrough(Bundle)
          * @see #addPassThroughData(Intent,Bundle)
-        */
+         */
         public static int retrievePassThroughMessageID(Intent queryConditionIntent) {
 
             int toReturn = -1;
@@ -692,7 +731,7 @@ public class TaskerPlugin {
 
             Bundle passThroughBundle;
 
-            if (requestQueryIntent.hasExtra( EXTRA_REQUEST_QUERY_PASS_THROUGH_DATA ) )
+            if (requestQueryIntent.hasExtra(EXTRA_REQUEST_QUERY_PASS_THROUGH_DATA))
                 passThroughBundle = requestQueryIntent.getBundleExtra(EXTRA_REQUEST_QUERY_PASS_THROUGH_DATA);
             else {
                 passThroughBundle = new Bundle();
@@ -710,7 +749,7 @@ public class TaskerPlugin {
          * Tell the plugin what capabilities the host support. This should be called when sending
          * intents to any EditActivity, FireReceiver or QueryReceiver.
          *
-         * @param toPlugin the intent we're sending
+         * @param  toPlugin the intent we're sending
          * @return capabilities one or more of the EXTRA_HOST_CAPABILITY_XXX flags
          */
         public static Intent addCapabilities(Intent toPlugin, int capabilities) {
@@ -721,14 +760,19 @@ public class TaskerPlugin {
          * Add an intent to the fire intent before it goes to the plugin FireReceiver, which the plugin
          * can use to signal when it is finished. Only use if @code{pluginWantsSychronousExecution} is true.
          *
-         * @param fireIntent       fire intent going to the plugin
+         * @param fireIntent fire intent going to the plugin
          * @param completionIntent intent which will signal the host that the plugin is finished.
-         *                         Implementation is host-dependent.
+         * Implementation is host-dependent.
          */
-        public static void addCompletionIntent(Intent fireIntent, Intent completionIntent ) {
+        public static void addCompletionIntent(Intent fireIntent, Intent completionIntent, ComponentName callService, boolean foreground) {
+            if (callService != null) {
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE_PACKAGE, callService.getPackageName());
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE, callService.getClassName());
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE_FOREGROUND, foreground);
+            }
             fireIntent.putExtra(
                     Setting.EXTRA_PLUGIN_COMPLETION_INTENT,
-                    completionIntent.toUri( Intent.URI_INTENT_SCHEME )
+                    completionIntent.toUri(Intent.URI_INTENT_SCHEME)
             );
         }
 
@@ -739,9 +783,9 @@ public class TaskerPlugin {
          * @param completionIntent intent returned from the plugin when it finished.
          * @return resultCode measure of plugin success, defaults to UNKNOWN
          */
-        public static int getSettingResultCode(Intent completionIntent ) {
+        public static int getSettingResultCode(Intent completionIntent) {
 
-            Integer val = (Integer) getExtraValueSafe( completionIntent, Setting.EXTRA_RESULT_CODE, Integer.class, "getSettingResultCode");
+            Integer val = (Integer) getExtraValueSafe(completionIntent, Setting.EXTRA_RESULT_CODE, Integer.class, "getSettingResultCode");
 
             return (val == null) ? Setting.RESULT_CODE_UNKNOWN : val;
         }
@@ -770,8 +814,8 @@ public class TaskerPlugin {
          * that which the plugin requests.
          * @see #REQUESTED_TIMEOUT_MS_NONE, REQUESTED_TIMEOUT_MS_MAX, REQUESTED_TIMEOUT_MS_NEVER
          */
-        public static void addHintTimeoutMS(Intent toPlugin, int timeoutMS ) {
-            getHintsBundle( toPlugin, "addHintTimeoutMS" ).putInt( BUNDLE_KEY_HINT_TIMEOUT_MS, timeoutMS);
+        public static void addHintTimeoutMS(Intent toPlugin, int timeoutMS) {
+            getHintsBundle(toPlugin, "addHintTimeoutMS").putInt(BUNDLE_KEY_HINT_TIMEOUT_MS, timeoutMS);
         }
 
         private static Bundle getHintsBundle(Intent intent, String funcName) {
@@ -798,14 +842,14 @@ public class TaskerPlugin {
                     ;
         }
 
-        public static String [] getSettingVariableReplaceKeys(Bundle fromPluginEditActivity ) {
+        public static String[] getSettingVariableReplaceKeys(Bundle fromPluginEditActivity) {
             return getStringArrayFromBundleString(
                     fromPluginEditActivity, Setting.BUNDLE_KEY_VARIABLE_REPLACE_STRINGS,
                     "getSettingVariableReplaceKeys"
             );
         }
 
-        public static String [] getKeysWithEncoding(Bundle fromPluginEditActivity, Encoding encoding ) {
+        public static String[] getKeysWithEncoding(Bundle fromPluginEditActivity, Encoding encoding) {
 
             String [] toReturn = null;
 
@@ -815,41 +859,41 @@ public class TaskerPlugin {
                         "getKeyEncoding:JSON"
                 );
             else
-                Log.w( TAG, "Host.getKeyEncoding: unknown encoding " + encoding);
+                Log.w(TAG, "Host.getKeyEncoding: unknown encoding " + encoding);
 
             return toReturn;
         }
 
-        public static boolean haveRelevantVariables(Bundle b ) {
+        public static boolean haveRelevantVariables(Bundle b) {
             return b.containsKey( BUNDLE_KEY_RELEVANT_VARIABLES );
         }
 
-        public static void cleanRelevantVariables(Bundle b ) {
-            b.remove( BUNDLE_KEY_RELEVANT_VARIABLES);
+        public static void cleanRelevantVariables(Bundle b) {
+            b.remove(BUNDLE_KEY_RELEVANT_VARIABLES);
         }
 
-        public static void cleanHints(Bundle extras ) {
+        public static void cleanHints(Bundle extras) {
             extras.remove( TaskerPlugin.EXTRA_HINTS_BUNDLE );
         }
 
-        public static void cleanRequestedTimeout(Bundle extras ) {
-            extras.remove( Setting.EXTRA_REQUESTED_TIMEOUT);
+        public static void cleanRequestedTimeout(Bundle extras) {
+            extras.remove(Setting.EXTRA_REQUESTED_TIMEOUT);
         }
 
         public static void cleanSettingReplaceVariables(Bundle b) {
-            b.remove(Setting.BUNDLE_KEY_VARIABLE_REPLACE_STRINGS );
+            b.remove(Setting.BUNDLE_KEY_VARIABLE_REPLACE_STRINGS);
         }
     }
 
     // ---------------------------------- HELPER FUNCTIONS -------------------------------- //
 
-    private static Object getBundleValueSafe(Bundle b, String key, Class<?> expectedClass, String funcName ) {
+    private static Object getBundleValueSafe(Bundle b, String key, Class<?> expectedClass, String funcName) {
         Object value = null;
 
         if ( b != null ) {
             if ( b.containsKey( key ) ) {
                 Object obj = b.get( key );
-                if ( obj == null)
+                if (obj == null)
                     Log.w(TAG, funcName + ": " + key + ": null value");
                 else if (obj.getClass() != expectedClass)
                     Log.w(TAG, funcName + ": " + key + ": expected " + expectedClass.getClass().getName() + ", got " + obj.getClass().getName());
@@ -905,7 +949,10 @@ public class TaskerPlugin {
                 digitCount++;
         }
 
-        return digitCount != (varName.length() - 1);
+        if (digitCount == (varName.length() - 1))
+            return false;
+
+        return true;
     }
 
     private static String[] getStringArrayFromBundleString(Bundle bundle, String key, String funcName) {
@@ -961,7 +1008,7 @@ public class TaskerPlugin {
             sr = new SecureRandom();
             lastRandomsSeen = new int[RANDOM_HISTORY_SIZE];
 
-            for (int x = 0; x < lastRandomsSeen.length; x++ )
+            for (int x = 0; x < lastRandomsSeen.length; x++)
                 lastRandomsSeen[x] = -1;
         }
 

@@ -3,12 +3,21 @@
 package com.matejdro.wearutils.messages
 
 import android.content.Context
+import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.MessageApi
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.MessageOptions
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import java.util.*
+import java.util.Collections
+import kotlin.coroutines.resume
 
 @WorkerThread
 fun getOtherNodeId(googleApiClient: GoogleApiClient): String? {
@@ -22,22 +31,23 @@ fun getOtherNodeId(googleApiClient: GoogleApiClient): String? {
 }
 
 fun getOtherNodeIdAsync(googleApiClient: GoogleApiClient, callback: NodeCallback) {
-    Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback { getConnectedNodesResult ->
-        val connectedNodes = getConnectedNodesResult.nodes
+    Wearable.NodeApi.getConnectedNodes(googleApiClient)
+        .setResultCallback { getConnectedNodesResult ->
+            val connectedNodes = getConnectedNodesResult.nodes
 
-        var node: String? = null
-        if (connectedNodes != null && connectedNodes.isNotEmpty()) {
-            Collections.sort(connectedNodes, NodeNearbyComparator.INSTANCE)
-            node = connectedNodes[0].id
+            var node: String? = null
+            if (connectedNodes != null && connectedNodes.isNotEmpty()) {
+                Collections.sort(connectedNodes, NodeNearbyComparator.INSTANCE)
+                node = connectedNodes[0].id
+            }
+
+            callback.onNodeRecevived(node)
         }
-
-        callback.onNodeRecevived(node)
-    }
 }
 
 suspend fun NodeClient.getNearestNodeId(): String? {
     val connectedNodes = this.connectedNodes.await()
-            .sortedWith(NodeNearbyComparator.INSTANCE)
+        .sortedWith(NodeNearbyComparator.INSTANCE)
 
     return connectedNodes.firstOrNull()?.id
 }
@@ -46,7 +56,11 @@ suspend fun NodeClient.getNearestNodeId(): String? {
  * @return if successful, an ID used to identify the sent message. If no client was connected, null. If sending failed, [ApiException].
  * A successful result doesn't guarantee delivery.
  */
-suspend fun MessageClient.sendMessageToNearestClient(nodeClient: NodeClient, path: String, data: ByteArray? = null): Int? {
+suspend fun MessageClient.sendMessageToNearestClient(
+    nodeClient: NodeClient,
+    path: String,
+    data: ByteArray? = null
+): Int? {
     try {
         val nearestNode = nodeClient.getNearestNodeId() ?: return null
         return this.sendMessage(nearestNode, path, data).await()
@@ -62,27 +76,56 @@ suspend fun MessageClient.sendMessageToNearestClient(nodeClient: NodeClient, pat
  * A successful result doesn't guarantee delivery.
  */
 suspend fun MessageClient.sendMessageToNearestClient(
-        nodeClient: NodeClient,
-        path: String,
-        data: ByteArray? = null,
-        messageOptions: MessageOptions
+    nodeClient: NodeClient,
+    path: String,
+    data: ByteArray? = null,
+    messageOptions: MessageOptions
 ): Int? {
     val nearestNode = nodeClient.getNearestNodeId() ?: return null
     return this.sendMessage(nearestNode, path, data, messageOptions).await()
 }
 
+suspend fun MessageClient.awaitFirstMessage(uriFilter: Uri, filterType: Int): MessageEvent {
+    return suspendCancellableCoroutine<MessageEvent> { continuation ->
+        val listener = MessageClient.OnMessageReceivedListener {
+            continuation.resume(it)
+        }
+
+        addListener(listener, uriFilter, filterType)
+
+        continuation.invokeOnCancellation {
+            removeListener(listener)
+        }
+    }
+}
+
 fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray) {
     getOtherNodeIdAsync(googleApiClient, object : NodeCallback {
         override fun onNodeRecevived(node: String?) {
-            Wearable.MessageApi.sendMessage(googleApiClient, requireNotNull(node), targetPath, payload)
+            Wearable.MessageApi.sendMessage(
+                googleApiClient,
+                requireNotNull(node),
+                targetPath,
+                payload
+            )
         }
     })
 }
 
-fun sendSingleMessage(googleApiClient: GoogleApiClient, targetPath: String, payload: ByteArray, callback: (MessageApi.SendMessageResult) -> Unit) {
+fun sendSingleMessage(
+    googleApiClient: GoogleApiClient,
+    targetPath: String,
+    payload: ByteArray,
+    callback: (MessageApi.SendMessageResult) -> Unit
+) {
     getOtherNodeIdAsync(googleApiClient, object : NodeCallback {
         override fun onNodeRecevived(node: String?) {
-            Wearable.MessageApi.sendMessage(googleApiClient, requireNotNull(node), targetPath, payload).setResultCallback(callback)
+            Wearable.MessageApi.sendMessage(
+                googleApiClient,
+                requireNotNull(node),
+                targetPath,
+                payload
+            ).setResultCallback(callback)
         }
     })
 }

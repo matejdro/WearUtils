@@ -3,48 +3,29 @@ package com.matejdro.wearutils.companionnotice
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.wearable.CapabilityApi
-import com.google.android.gms.wearable.CapabilityApi.GetCapabilityResult
+import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-abstract class WearCompanionWatchActivity : AppCompatActivity(),
-    GoogleApiClient.ConnectionCallbacks, ResultCallback<GetCapabilityResult> {
-    private lateinit var googleApiClient: GoogleApiClient
-
+abstract class WearCompanionWatchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        googleApiClient = GoogleApiClient.Builder(this)
-            .addApi(Wearable.API)
-            .addConnectionCallbacks(this)
-            .build()
+
+        lifecycleScope.launch {
+            val capabilityClient = Wearable.getCapabilityClient(this@WearCompanionWatchActivity)
+
+            val matchingCapabilities = capabilityClient.getCapability(
+                getPhoneAppPresenceCapability(),
+                CapabilityClient.FILTER_ALL
+            ).await()
+
+            val installedOnWatch = !matchingCapabilities.nodes.isEmpty()
+            onWatchAppInstalledResult(installedOnWatch)
+        }
     }
 
-    override fun onStart() {
-        googleApiClient.connect()
-        super.onStart()
-    }
-
-    override fun onStop() {
-        googleApiClient.disconnect()
-        super.onStop()
-    }
-
-    override fun onConnected(bundle: Bundle?) {
-        Wearable.CapabilityApi.getCapability(
-            googleApiClient,
-            getPhoneAppPresenceCapability(),
-            CapabilityApi.FILTER_ALL
-        )
-            .setResultCallback(this)
-    }
-
-    override fun onConnectionSuspended(i: Int) {}
-    override fun onResult(getCapabilityResult: GetCapabilityResult) {
-        val installedOnWatch = !getCapabilityResult.capability.nodes.isEmpty()
-        onWatchAppInstalledResult(installedOnWatch)
-    }
 
     protected fun onWatchAppInstalledResult(watchAppInstalled: Boolean) {
         if (watchAppInstalled) {

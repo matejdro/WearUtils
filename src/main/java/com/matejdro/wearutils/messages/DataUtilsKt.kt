@@ -4,8 +4,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataItemAsset
 import com.google.android.gms.wearable.WearableStatusCodes
-import com.matejdro.wearutils.coroutines.await
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 suspend fun DataClient.getByteArrayAsset(asset: DataItemAsset): ByteArray? {

@@ -7,7 +7,7 @@ import androidx.annotation.WorkerThread
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.wearable.*
-import com.matejdro.wearutils.coroutines.await
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 @WorkerThread

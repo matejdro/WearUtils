@@ -1,71 +1,58 @@
-package com.matejdro.wearutils.companionnotice;
+package com.matejdro.wearutils.companionnotice
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.wearable.CapabilityApi
+import com.google.android.gms.wearable.CapabilityApi.GetCapabilityResult
+import com.google.android.gms.wearable.Wearable
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+abstract class WearCompanionWatchActivity : AppCompatActivity(),
+    GoogleApiClient.ConnectionCallbacks, ResultCallback<GetCapabilityResult> {
+    private lateinit var googleApiClient: GoogleApiClient
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.CapabilityApi;
-import com.google.android.gms.wearable.Wearable;
-
-public abstract class WearCompanionWatchActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, ResultCallback<CapabilityApi.GetCapabilityResult> {
-    private GoogleApiClient googleApiClient;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .build();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        googleApiClient = GoogleApiClient.Builder(this)
+            .addApi(Wearable.API)
+            .addConnectionCallbacks(this)
+            .build()
     }
 
-    @Override
-    protected void onStart() {
-        googleApiClient.connect();
-        super.onStart();
+    override fun onStart() {
+        googleApiClient.connect()
+        super.onStart()
     }
 
-    @Override
-    protected void onStop() {
-        googleApiClient.disconnect();
-        super.onStop();
+    override fun onStop() {
+        googleApiClient.disconnect()
+        super.onStop()
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Wearable.CapabilityApi.getCapability(googleApiClient, getPhoneAppPresenceCapability(), CapabilityApi.FILTER_ALL)
-                .setResultCallback(this);
+    override fun onConnected(bundle: Bundle?) {
+        Wearable.CapabilityApi.getCapability(
+            googleApiClient,
+            getPhoneAppPresenceCapability(),
+            CapabilityApi.FILTER_ALL
+        )
+            .setResultCallback(this)
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    override fun onConnectionSuspended(i: Int) {}
+    override fun onResult(getCapabilityResult: GetCapabilityResult) {
+        val installedOnWatch = !getCapabilityResult.capability.nodes.isEmpty()
+        onWatchAppInstalledResult(installedOnWatch)
     }
 
-    @Override
-    public void onResult(@NonNull CapabilityApi.GetCapabilityResult getCapabilityResult) {
-        boolean installedOnWatch = !getCapabilityResult.getCapability().getNodes().isEmpty();
-        onWatchAppInstalledResult(installedOnWatch);
-    }
-
-    protected void onWatchAppInstalledResult(boolean watchAppInstalled) {
+    protected fun onWatchAppInstalledResult(watchAppInstalled: Boolean) {
         if (watchAppInstalled) {
-            return;
+            return
         }
-
-        startActivity(new Intent(this, PhoneAppNoticeActivity.class));
-        finish();
+        startActivity(Intent(this, PhoneAppNoticeActivity::class.java))
+        finish()
     }
 
-    public GoogleApiClient getGoogleApiClient() {
-        return googleApiClient;
-    }
-
-    public abstract String getPhoneAppPresenceCapability();
+    abstract fun getPhoneAppPresenceCapability(): String
 }

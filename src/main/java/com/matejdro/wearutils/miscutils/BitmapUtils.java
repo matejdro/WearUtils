@@ -25,7 +25,7 @@ public class BitmapUtils {
         if (parcelable instanceof Bitmap) {
             return (Bitmap) parcelable;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && parcelable instanceof Icon) {
-            return getBitmap(context, (Icon) parcelable);
+            return getBitmapFromIcon(context, (Icon) parcelable);
         } else if (parcelable instanceof Drawable) {
             return getBitmap((Drawable) parcelable);
         } else {
@@ -81,7 +81,7 @@ public class BitmapUtils {
 
     @Nullable
     @TargetApi(Build.VERSION_CODES.M)
-    public static Bitmap getBitmap(Context context, @Nullable Icon icon) {
+    public static Bitmap getBitmapFromIcon(Context context, @Nullable Icon icon) {
         if (icon == null) {
             return null;
         }

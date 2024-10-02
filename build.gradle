@@ -49,6 +49,7 @@ dependencies {
     implementation wearUtilsLibs.kotlin.coroutines
     implementation wearUtilsLibs.kotlin.coroutines.android
     implementation wearUtilsLibs.kotlin.coroutines.playServices
+    implementation wearUtilsLibs.kotlinova.core
 
     testImplementation wearUtilsLibs.robolectric
     testImplementation wearUtilsLibs.junit4

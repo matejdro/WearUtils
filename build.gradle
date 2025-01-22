@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
     namespace = "com.matejdro.wearutils"
 
     defaultConfig {
+        compileSdk 35
         minSdkVersion 18
         targetSdkVersion 30
         versionCode 1
